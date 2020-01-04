@@ -4,41 +4,57 @@ am4core.ready(function() {
     am4core.useTheme(am4themes_animated);
 // Themes end
 
+    /**
+     * ---------------------------------------
+     * This demo was created using amCharts 4.
+     *
+     * For more information visit:
+     * https://www.amcharts.com/
+     *
+     * Documentation is available at:
+     * https://www.amcharts.com/docs/v4/
+     * ---------------------------------------
+     */
+
+// Create chart instance
     var chart = am4core.create("chartdiv", am4charts.XYChart);
-    chart.paddingRight = 20;
 
-    var data = [];
-    var visits = 10;
-    for (var i = 1; i < 50000; i++) {
-        visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
-        data.push({ date: new Date(2018, 0, i), value: visits });
-    }
+// Set up data source
+    chart.dataSource.url = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-160/sample_data_serial.json";
 
-    chart.data = data;
+// Create axes
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "year";
 
-    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    dateAxis.renderer.grid.template.location = 0;
-    dateAxis.minZoomCount = 5;
-
-
-// this makes the data to be grouped
-    dateAxis.groupData = true;
-    dateAxis.groupCount = 500;
-
+// Create value axis
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-    var series = chart.series.push(new am4charts.LineSeries());
-    series.dataFields.dateX = "date";
-    series.dataFields.valueY = "value";
-    series.tooltipText = "{valueY}";
-    series.tooltip.pointerOrientation = "vertical";
-    series.tooltip.background.fillOpacity = 0.5;
+// Create series
+    var series1 = chart.series.push(new am4charts.LineSeries());
+    series1.dataFields.valueY = "cars";
+    series1.dataFields.categoryX = "year";
+    series1.name = "Cars";
+    series1.strokeWidth = 3;
+    series1.tensionX = 0.7;
+    series1.bullets.push(new am4charts.CircleBullet());
 
-    chart.cursor = new am4charts.XYCursor();
-    chart.cursor.xAxis = dateAxis;
+    var series2 = chart.series.push(new am4charts.LineSeries());
+    series2.dataFields.valueY = "motorcycles";
+    series2.dataFields.categoryX = "year";
+    series2.name = "Motorcycles";
+    series2.strokeWidth = 3;
+    series2.tensionX = 0.7;
+    series2.bullets.push(new am4charts.CircleBullet());
 
-    var scrollbarX = new am4core.Scrollbar();
-    scrollbarX.marginBottom = 20;
-    chart.scrollbarX = scrollbarX;
+    var series3 = chart.series.push(new am4charts.LineSeries());
+    series3.dataFields.valueY = "bicycles";
+    series3.dataFields.categoryX = "year";
+    series3.name = "Bicycles";
+    series3.strokeWidth = 3;
+    series3.tensionX = 0.7;
+    series3.bullets.push(new am4charts.CircleBullet());
+
+// Add legend
+    chart.legend = new am4charts.Legend();
 
 }); // end am4core.ready()

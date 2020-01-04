@@ -5,7 +5,7 @@ am4core.ready(function() {
 
     var chart = am4core.create("chartdiv", am4charts.XYChart);
     chart.paddingRight = 20;
-    chart.dataSource.url = "../data/alle.csv";
+    chart.dataSource.url = "../data/test_refactored.csv";
     chart.dataSource.parser = new am4core.CSVParser();
     chart.dataSource.parser.options.useColumnNames = true;
     chart.dataSource.parser.options.delimiter = ";";
@@ -14,7 +14,8 @@ am4core.ready(function() {
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.renderer.grid.template.location = 0;
     dateAxis.minZoomCount = 1;
-
+    dateAxis.groupData = true;
+    dateAxis.groupCount = 500;
 
 // this makes the data to be grouped
     dateAxis.groupData = true;
