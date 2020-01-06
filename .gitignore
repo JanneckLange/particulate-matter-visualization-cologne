@@ -3,3 +3,8 @@
 /public/time_series_json_our/data/
 /public/time_series_our/data/
 /public/vega_lite/data/
+/.idea/
+/public/mongo/api/.idea/
+/public/mongo/api/node_modules/
+/public/mongo/node_modules/
+/public/mongo/collections/
