@@ -54,6 +54,16 @@ am4core.ready(function() {
     series3.tensionX = 0.7;
     series3.bullets.push(new am4charts.CircleBullet());
 
+
+
+    var scrollbarX = new am4core.Scrollbar();
+    scrollbarX.marginBottom = 20;
+    chart.scrollbarX = scrollbarX;
+
+    scrollbarX.events.on("up", (target) => {
+        console.log(series1);
+    });
+
 // Add legend
     chart.legend = new am4charts.Legend();
 
