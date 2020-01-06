@@ -22,23 +22,25 @@ MongoClient.connect(url, async function (err, db) {
 
 
     sensors.forEach((sensor) => {
-        dbo.collection(sensor.toString()).aggregate([
+        dbo.collection("s" + sensor.toString()).aggregate([
             {
                 $project: {
                     date: {
                         $dateToString: {
                             format: "%Y-%m-%d",
-                            date: {$toDate: {$toLong: {$multiply: ["$timestamp", 1000]}}}
+                            date: {$toDate: {$toLong: "$timestamp"}}
                         }
                     },
                     P1: '$P1',
                     P2: '$P2',
-                    id: '$sensor_id'
+                    id: '$sensor_id',
+                    timestamp: "$timestamp"
                 }
             },
             {
                 $group: {
                     _id: '$date',
+                    timestamp: {$first: '$timestamp'},
                     avgP1: {$avg: '$P1'},
                     avgP2: {$avg: '$P2'},
                     sensor_id: {$last: '$id'}
@@ -50,20 +52,13 @@ MongoClient.connect(url, async function (err, db) {
                 throw err;
             // console.log(res)
             res.forEach((data) => {
-                let average = {sensor: data.sensor_id, day: data._id, averageP1:data.avgP1,averageP2:data.avgP2};
-                dbo.collection("avg").insertOne(average, function (err, res) {
+
+                let average = {sensor: data.sensor_id, day: new Date(data._id).getTime(), averageP1: data.avgP1, averageP2: data.avgP2};
+                dbo.collection("dailyAVG").insertOne(average, function (err, res) {
                     if (err) throw err;
-                    console.log("1 document inserted");
+                    console.log( data.sensor_id+": "+data._id);
                 });
             });
         });
     });
 });
-
-
-// let average = { sensor: sensor, day: "Highway 37", average: };
-// dbo.collection("customers").insertOne(myobj, function(err, res) {
-//     if (err) throw err;
-//     console.log("1 document inserted");
-//     db.close();
-// });
