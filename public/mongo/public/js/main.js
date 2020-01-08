@@ -4,13 +4,7 @@ am4core.ready(function() {
     am4core.options.onlyShowOnViewport = true;
 
     function getData(min,max,sensor_id) {
-        let delta = max - min;
-        let resolution;
-        switch (delta) {
-            case (delta < 1000): resolution = "accurate"; break;
-            case (delta >= 1000): resolution = "average"; break;
-        }
-        fetch("/api/" + resolution + "?min=" + min + "&max=" + max + "&sensor=" + sensor_id)
+        fetch("/api/?min=" + min + "&max=" + max + "&sensor=" + sensor_id)
             .then(async (response)=>{
                 return await response.json();
             });
