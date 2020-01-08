@@ -1,8 +1,3 @@
-/public/time_series_our/data/*
-/public/multiple_datasets/data/sensor_1164_converted.json
-/public/time_series_json_our/data/
-/public/time_series_our/data/
-/public/vega_lite/data/
 /.idea/
 /public/mongo/api/.idea/
 /public/mongo/api/node_modules/
