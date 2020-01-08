@@ -11,8 +11,6 @@ const sensors = [
     23234, 24877, 28387, 28499, 30888,
     32834, 35245
 ];
-const dataMinDate = 1527811200000;
-const dataMaxDate = 1578338286000;
 const accurateDataTime = 604800000;//1 week
 
 router.get('/', function (req, res, next) {
@@ -29,11 +27,7 @@ router.get('/', function (req, res, next) {
         sendEverythingForOne(req, res, next)
     } else if (min > max) {
         res.send('min must be lower than max').status(400);
-    } else if (max < dataMinDate) {
-        res.send('max Date to low').status(400);
-    } else if (min > dataMaxDate) {
-        res.send('min Date to height').status(400);
-    } else if (max - min < accurateDataTime) {
+    }  else if (max - min < accurateDataTime) {
         console.log('send accurate Data');
         sendAccurateDataTime(req, res, next);
     } else {
@@ -56,7 +50,7 @@ router.get('/sensors', function (req, res, next) {
         let dbo = db.db("gdv");
 
         MongoClient.connect(url, function (err, db) {
-            dbo.collection('dailyAVG').distinct('sensor').then((data) => {
+            dbo.collection('dailyAVG').distinct('sensor_id').then((data) => {
                 res.send(data)
             })
         });
@@ -69,10 +63,10 @@ router.get('/info', function (req, res, next) {
         let dbo = db.db("gdv").collection('dailyAVG');
 
         MongoClient.connect(url, function (err, db) {
-            dbo.distinct('sensor').then((sensorData) => {
-                dbo.find().sort({day: 1}).limit(1).toArray((err, minData) => {
-                    dbo.find().sort({day: -1}).limit(1).toArray((err, maxData) => {
-                        res.send({sensors: sensorData, min: minData[0].day, max: maxData[0].day})
+            dbo.distinct('sensor_id').then((sensorData) => {
+                dbo.find().sort({timestamp: 1}).limit(1).toArray((err, minData) => {
+                    dbo.find().sort({timestamp: -1}).limit(1).toArray((err, maxData) => {
+                        res.send({sensors: sensorData, min: minData[0].timestamp, max: maxData[0].timestamp})
                     });
                 });
             })
@@ -113,11 +107,11 @@ function sendAverageDataTime(req, res, next) {
         let dbo = db.db("gdv");
 
         let query = {
-            day: {
+            timestamp: {
                 $gte: parseInt(min),//min Date
                 $lt: parseInt(max)//max Date
             },
-            sensor: parseInt(sensor)
+            sensor_id: parseInt(sensor)
         };
         dbo.collection('dailyAVG').find(query).toArray(function (err, result) {
             if (err) throw err;
@@ -146,7 +140,7 @@ function sendEverythingForOne(req, res, next) {
         if (err) throw err;
         let dbo = db.db("gdv");
 
-        dbo.collection('dailyAVG').find({sensor: parseInt(sensor)}).toArray(function (err, result) {
+        dbo.collection('dailyAVG').find({sensor_id: parseInt(sensor)}).toArray(function (err, result) {
             if (err) throw err;
             res.send(result);
             db.close();

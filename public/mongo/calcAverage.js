@@ -34,7 +34,9 @@ MongoClient.connect(url, async function (err, db) {
                     P1: '$P1',
                     P2: '$P2',
                     id: '$sensor_id',
-                    timestamp: "$timestamp"
+                    timestamp: "$timestamp",
+                    lat: '$lat',
+                    lon: '$lon'
                 }
             },
             {
@@ -43,7 +45,9 @@ MongoClient.connect(url, async function (err, db) {
                     timestamp: {$first: '$timestamp'},
                     avgP1: {$avg: '$P1'},
                     avgP2: {$avg: '$P2'},
-                    sensor_id: {$last: '$id'}
+                    sensor_id: {$last: '$id'},
+                    lat: {$last: '$lat'},
+                    lon: {$last: '$lon'}
                 }
             },
             {$sort: {_id: 1}}
@@ -53,10 +57,18 @@ MongoClient.connect(url, async function (err, db) {
             // console.log(res)
             res.forEach((data) => {
 
-                let average = {sensor: data.sensor_id, day: new Date(data._id).getTime(), averageP1: data.avgP1, averageP2: data.avgP2};
+                let average = {
+                    sensor_id: data.sensor_id,
+                    timestamp: new Date(data._id).getTime(),
+                    P1: data.avgP1,
+                    P2: data.avgP2,
+                    lat: data.lat,
+                    long: data.lon,
+                    dataType: 'average'
+                };
                 dbo.collection("dailyAVG").insertOne(average, function (err, res) {
                     if (err) throw err;
-                    console.log( data.sensor_id+": "+data._id);
+                    console.log(data.sensor_id + ": " + data._id);
                 });
             });
         });
