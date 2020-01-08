@@ -25,6 +25,8 @@ router.get('/', function (req, res, next) {
         sendEverything(req, res, next);
     } else if (!sensors.includes(parseInt(sensor))) {
         res.send('sensor not available').status(400);
+    } else if (!min && !max) {
+        sendEverythingForOne(req, res, next)
     } else if (min > max) {
         res.send('min must be lower than max').status(400);
     } else if (max < dataMinDate) {
@@ -131,6 +133,20 @@ function sendEverything(req, res, next) {
         let dbo = db.db("gdv");
 
         dbo.collection('dailyAVG').find().toArray(function (err, result) {
+            if (err) throw err;
+            res.send(result);
+            db.close();
+        });
+    });
+}
+
+function sendEverythingForOne(req, res, next) {
+    let sensor = req.query.sensor;
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        let dbo = db.db("gdv");
+
+        dbo.collection('dailyAVG').find({sensor: parseInt(sensor)}).toArray(function (err, result) {
             if (err) throw err;
             res.send(result);
             db.close();
