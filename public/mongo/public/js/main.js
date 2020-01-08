@@ -10,7 +10,7 @@ am4core.ready(function() {
             });
     }
 
-    function getlowResolutionData(sensor_id) {
+    function getAllLowRes(sensor_id) {
         fetch("/api/?sensor=" + sensor_id)
             .then(async (response) => {
                 return await response.json();
@@ -41,7 +41,7 @@ am4core.ready(function() {
         series.id = sensors[i];
         series.dataSource.updateCurrentData = true;
         series.dateFormatter = "x";
-        series.dataSource.url = getlowResolutionData(sensors[i]);
+        series.dataSource.url = getAllLowRes(sensors[i]);
         series.dataSource.load();
     }
 
