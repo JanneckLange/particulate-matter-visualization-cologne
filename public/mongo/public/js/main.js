@@ -10,7 +10,7 @@ am4core.ready(function() {
             case (delta < 1000): resolution = "accurate"; break;
             case (delta >= 1000): resolution = "average"; break;
         }
-        fetch(resolution + "/api?min=" + min + "&max=" + max + "&sensor=" + sensor_id)
+        fetch("/api/" + resolution + "?min=" + min + "&max=" + max + "&sensor=" + sensor_id)
             .then(async (response)=>{
                 return await response.json();
             });
