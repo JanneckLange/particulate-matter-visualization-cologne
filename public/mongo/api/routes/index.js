@@ -11,7 +11,8 @@ const sensors = [
     23234, 24877, 28387, 28499, 30888,
     32834, 35245
 ];
-const accurateDataTime = 604800000;//1 week
+const accurateDataTime = 7 * 24 * 3600000;//1 week
+const hourlyDataTime = 5 * 3600000;//5h
 
 router.get('/', function (req, res, next) {
     let min = req.query.min;
@@ -27,12 +28,15 @@ router.get('/', function (req, res, next) {
         sendEverythingForOne(req, res, next)
     } else if (min > max) {
         res.send('min must be lower than max').status(400);
-    }  else if (max - min < accurateDataTime) {
+    } else if (max - min < accurateDataTime) {
         console.log('send accurate Data');
         sendAccurateDataTime(req, res, next);
+    } else if (max - min < hourlyDataTime) {
+        console.log('send average Data (hour)');
+        sendAverageDataTime(req, res, next, 'hourlyAVG');
     } else {
-        console.log('send average Data');
-        sendAverageDataTime(req, res, next);
+        console.log('send average Data (day)');
+        sendAverageDataTime(req, res, next, 'dailyAVG');
     }
 });
 
@@ -40,8 +44,12 @@ router.get('/accurate', function (req, res, next) {
     sendAccurateDataTime(req, res, next);
 });
 
-router.get('/average', function (req, res, next) {
-    sendAverageDataTime(req, res, next);
+router.get('/average/hour', function (req, res, next) {
+    sendAverageDataTime(req, res, next, 'hourlyAVG');
+});
+
+router.get('/average/day', function (req, res, next) {
+    sendAverageDataTime(req, res, next, 'dailyAVG');
 });
 
 router.get('/sensors', function (req, res, next) {
@@ -97,7 +105,7 @@ function sendAccurateDataTime(req, res, next) {
     });
 }
 
-function sendAverageDataTime(req, res, next) {
+function sendAverageDataTime(req, res, next, accuracy) {
     let sensor = req.query.sensor;
     let min = req.query.min;
     let max = req.query.max;
@@ -113,7 +121,7 @@ function sendAverageDataTime(req, res, next) {
             },
             sensor_id: parseInt(sensor)
         };
-        dbo.collection('dailyAVG').find(query).toArray(function (err, result) {
+        dbo.collection(accuracy).find(query).sort({timestamp: 1}).toArray(function (err, result) {
             if (err) throw err;
             res.send(result);
             db.close();
@@ -126,7 +134,7 @@ function sendEverything(req, res, next) {
         if (err) throw err;
         let dbo = db.db("gdv");
 
-        dbo.collection('dailyAVG').find().toArray(function (err, result) {
+        dbo.collection('dailyAVG').find().sort({timestamp: 1}).toArray(function (err, result) {
             if (err) throw err;
             res.send(result);
             db.close();
@@ -140,7 +148,7 @@ function sendEverythingForOne(req, res, next) {
         if (err) throw err;
         let dbo = db.db("gdv");
 
-        dbo.collection('dailyAVG').find({sensor_id: parseInt(sensor)}).toArray(function (err, result) {
+        dbo.collection('dailyAVG').find({sensor_id: parseInt(sensor)}).sort({timestamp: 1}).toArray(function (err, result) {
             if (err) throw err;
             res.send(result);
             db.close();
