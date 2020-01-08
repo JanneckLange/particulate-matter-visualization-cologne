@@ -2,3 +2,4 @@
 /api/.idea/
 /api/node_modules/
 /scripts/node_modules/
+/public/mongo/api/node_modules/
