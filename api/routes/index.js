@@ -11,8 +11,8 @@ const sensors = [
     23234, 24877, 28387, 28499, 30888,
     32834, 35245
 ];
-const accurateDataTime = 7 * 24 * 3600000;//1 week
-const hourlyDataTime = 5 * 3600000;//5h
+const accurateDataTime = 5 * 3600000;
+const hourlyDataTime = 7 * 24 * 3600000;
 
 router.get('/', function (req, res, next) {
     let min = req.query.min;
@@ -74,7 +74,17 @@ router.get('/info', function (req, res, next) {
             dbo.distinct('sensor_id').then((sensorData) => {
                 dbo.find().sort({timestamp: 1}).limit(1).toArray((err, minData) => {
                     dbo.find().sort({timestamp: -1}).limit(1).toArray((err, maxData) => {
-                        res.send({sensors: sensorData, min: minData[0].timestamp, max: maxData[0].timestamp})
+                        res.send({
+                            sensors: sensorData,
+                            min: minData[0].timestamp,
+                            max: maxData[0].timestamp,
+                            autoAccuracy: {
+                                accurate: hourlyDataTime,
+                                hourlyAverage: accurateDataTime,
+                                dailyAverage: null,
+                                description: "send data when time range between min and max timestamp is smaller than given value (milliseconds). Null value means everything else."
+                            }
+                        })
                     });
                 });
             })
