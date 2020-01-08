@@ -22,8 +22,10 @@ am4core.ready(function() {
     series.tooltipText = "{P2}";
     series.name = "sensor_1164";
     series.dataSource.updateCurrentData = true;
-    series.dateFormatter = "x";
-    series.dataSource.url = data1;
+    series.dateFormatter = {
+        "dateFormat": "MM-dd"
+    };
+    series.dataSource.url = "http://localhost:3000/api";
 
     var scrollbarX = new am4core.Scrollbar();
     scrollbarX.marginBottom = 20;
