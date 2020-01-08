@@ -38,13 +38,42 @@ router.get('/', function (req, res, next) {
     }
 });
 
-/* GET home page. */
 router.get('/accurate', function (req, res, next) {
     sendAccurateDataTime(req, res, next);
 });
 
 router.get('/average', function (req, res, next) {
     sendAverageDataTime(req, res, next);
+});
+
+router.get('/sensors', function (req, res, next) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        let dbo = db.db("gdv");
+
+        MongoClient.connect(url, function (err, db) {
+            dbo.collection('dailyAVG').distinct('sensor').then((data) => {
+                res.send(data)
+            })
+        });
+    });
+});
+
+router.get('/info', function (req, res, next) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        let dbo = db.db("gdv").collection('dailyAVG');
+
+        MongoClient.connect(url, function (err, db) {
+            dbo.distinct('sensor').then((sensorData) => {
+                dbo.find().sort({day: 1}).limit(1).toArray((err, minData) => {
+                    dbo.find().sort({day: -1}).limit(1).toArray((err, maxData) => {
+                        res.send({sensors: sensorData, min: minData[0].day, max: maxData[0].day})
+                    });
+                });
+            })
+        });
+    });
 });
 
 function sendAccurateDataTime(req, res, next) {
