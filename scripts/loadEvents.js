@@ -24,8 +24,8 @@ request('https://geoportal.stadt-koeln.de/arcgis/rest/services/WebVerkehr_DataOS
                     date_end: data.properties.DATUM_BIS,
                     type: data.properties.TYP,
                     description: data.properties.BESCHREIBUNG,
-                    lat: data.geometry.coordinates[0],
-                    long: data.geometry.coordinates[1],
+                    lat: data.geometry.coordinates[1],
+                    long: data.geometry.coordinates[0],
 
                 };
 
