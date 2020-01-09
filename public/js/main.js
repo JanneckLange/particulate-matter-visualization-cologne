@@ -18,6 +18,8 @@ am4core.ready(async function () {
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
+    let accuracy = "averageDataTime";
+
     dateAxis.groupData = true;
 
     let sensors = await getSensors();
@@ -34,8 +36,14 @@ am4core.ready(async function () {
         series.id = sensors[i];
         series.dataSource.updateCurrentData = false;
         series.dataSource.url = path+"/?sensor=" + sensors[i];
-        //series.dateFormatter.inputDateFormat = "x";
-        series.dataSource.load();
+        series.resolution = "";
+
+        series.dataSource.events.on("done", (ev) => {
+            series.data = ev.data[0].data;
+            series.resolution = ev.data[0].resolution;
+            console.log(series.resolution);
+        });
+
         series.hide();
     }
 
@@ -45,16 +53,38 @@ am4core.ready(async function () {
     scrollbarX.marginBottom = 20;
     chart.scrollbarX = scrollbarX;
 
-    scrollbarX.events.on("up", async () => {
-        let basic = chart.map.getKey(activeSensors[0]);
-        let min = basic.xAxis.minZoomed;
-        let max = basic.xAxis.maxZoomed;
-
-        for (let i = 0; i < activeSensors.length; i++) {
-            let current = chart.map.getKey(activeSensors[i]);
-            current.data = await getData(min, max, activeSensors[i]);
-        }
+    chart.events.on("up", () => {
+        updateData();
+        console.log("chart touched")
     });
+
+    async function updateData() {
+        if(activeSensors.length > 0) {
+            let basic = chart.map.getKey(activeSensors[0]);
+            let min = basic.xAxis.minZoomed;
+            let max = basic.xAxis.maxZoomed;
+
+            let delta = max - min;
+            let newAccuracy;
+            if (delta <  5 * 3600000) {
+                newAccuracy = "accurateDataTime";
+            } else if (delta < 7 * 24 * 3600000) {
+                newAccuracy = "hourlyDataTime";
+            } else {
+                newAccuracy = "averageDataTime";
+            }
+
+            if(newAccuracy !== accuracy) {
+                console.log("updating data");
+                for (let i = 0; i < activeSensors.length; i++) {
+                    let current = chart.map.getKey(activeSensors[i]);
+                    let data = await getData(min, max, activeSensors[i]);
+                    current.data = data.data;
+                }
+                accuracy = newAccuracy;
+            }
+        }
+    }
 
     function makeInactive(sensor_id) {
         const index = activeSensors.indexOf(sensor_id);
@@ -66,6 +96,7 @@ am4core.ready(async function () {
     function makeActive(sensor_id) {
         if(!activeSensors.includes(sensor_id)) {
             activeSensors.push(sensor_id);
+
             if(activeSensors.length > 5) {
                 console.log("slicing");
                 let current = activeSensors.shift();
