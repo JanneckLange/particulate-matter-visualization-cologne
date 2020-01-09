@@ -2,10 +2,15 @@ am4core.ready(async function () {
     am4core.options.minPolylineStep = 10;
     am4core.options.queue = true;
     am4core.options.onlyShowOnViewport = true;
-    const path = "http://3e7a93f6.ngrok.io/api";
+    const path = "http://localhost:3000/api";
 
     async function getData(min, max, sensor_id) {
         let res = await fetch(path + "/?min=" + min + "&max=" + max + "&sensor=" + sensor_id);
+        return await res.json();
+    }
+
+    async function getLocations() {
+        let res = await fetch(path + "/sensor");
         return await res.json();
     }
 
@@ -40,7 +45,7 @@ am4core.ready(async function () {
         series.name = sensors[i].toString();
         series.id = sensors[i];
         series.dataSource.updateCurrentData = false;
-        series.dataSource.url = path+"/?sensor=" + sensors[i];
+        series.dataSource.url = path + "/?sensor=" + sensors[i];
         series.resolution = "";
 
         series.minBulletDistance = 30;
@@ -77,14 +82,14 @@ am4core.ready(async function () {
     });
 
     async function updateData() {
-        if(activeSensors.length > 0) {
+        if (activeSensors.length > 0) {
             let basic = chart.map.getKey(activeSensors[0]);
             let min = basic.xAxis.minZoomed;
             let max = basic.xAxis.maxZoomed;
 
             let delta = max - min;
             let newAccuracy;
-            if (delta <  5 * 3600000) {
+            if (delta < 5 * 3600000) {
                 newAccuracy = "accurateDataTime";
             } else if (delta < 7 * 24 * 3600000) {
                 newAccuracy = "hourlyDataTime";
@@ -92,7 +97,7 @@ am4core.ready(async function () {
                 newAccuracy = "averageDataTime";
             }
 
-            if(newAccuracy !== accuracy || (min < currentMin || max > currentMax) && newAccuracy !== accuracy){
+            if (newAccuracy !== accuracy || (min < currentMin || max > currentMax) && newAccuracy !== accuracy) {
                 console.log("updating data");
                 for (let i = 0; i < activeSensors.length; i++) {
                     let current = chart.map.getKey(activeSensors[i]);
@@ -114,10 +119,10 @@ am4core.ready(async function () {
     }
 
     function makeActive(sensor_id) {
-        if(!activeSensors.includes(sensor_id)) {
+        if (!activeSensors.includes(sensor_id)) {
             activeSensors.push(sensor_id);
 
-            if(activeSensors.length > 5) {
+            if (activeSensors.length > 5) {
                 console.log("slicing");
                 let current = activeSensors.shift();
                 console.log(current);
@@ -153,5 +158,48 @@ am4core.ready(async function () {
     chart.cursor.lineX.fill = am4core.color("#000");
     chart.cursor.lineX.fillOpacity = 0.1;
 
+
+    //MAP
+
+    const mymap = L.map('map', {
+        dragging: false,
+        scrollWheelZoom: false,
+        touchZoom: false
+    })
+        .setView([50.9126403, 6.962307], 12);
+
+    let loc = await getLocations();
+    loc.forEach(sensorLocation => {
+        let marker = L.marker([sensorLocation.lat, sensorLocation.long], {
+            riseOnHover: true,
+            title: sensorLocation._id,
+            doubleClickZoom: false,
+        }).addTo(mymap);
+
+        marker.gdvStats = {
+            active: false
+        };
+
+        marker.on('click', (x) => {
+            let sensor_id = x.target.options.title;
+            if (marker.gdvStats.active) {
+                makeInactive(sensor_id);
+                marker.gdvStats.active = false;
+            } else {
+                makeActive(sensor_id);
+                marker.gdvStats.active = true;
+            }
+        })
+    });
+
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 13,
+        minZoom: 13,
+        id: 'mapbox/streets-v11'
+    }).addTo(mymap);
+
 }, "chartdiv", am4charts.XYChart);
 // end am4core.ready()
+
+
