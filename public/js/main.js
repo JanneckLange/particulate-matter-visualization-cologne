@@ -105,7 +105,7 @@ am4core.ready(async function () {
 
             let delta = max - min;
             let newAccuracy;
-            if (delta < 5 * 3600000) {
+            if (delta < 10 * 3600000) {
                 newAccuracy = "accurateDataTime";
             } else if (delta < 7 * 24 * 3600000) {
                 newAccuracy = "hourlyDataTime";
