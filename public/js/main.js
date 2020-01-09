@@ -2,7 +2,7 @@ am4core.ready(async function () {
     am4core.options.minPolylineStep = 10;
     am4core.options.queue = true;
     am4core.options.onlyShowOnViewport = true;
-    const path = "http://localhost:3000/api";
+    const path = "http://996d6c12.ngrok.io/api";
 
     async function getData(min, max, sensor_id) {
         let res = await fetch(path + "/?min=" + min + "&max=" + max + "&sensor=" + sensor_id);
@@ -47,14 +47,13 @@ am4core.ready(async function () {
         series.dataSource.updateCurrentData = false;
         series.dataSource.url = path + "/?sensor=" + sensors[i];
         series.resolution = "";
-
         series.minBulletDistance = 30;
-        var bullet = series.bullets.push(new am4charts.CircleBullet());
+        /*var bullet = series.bullets.push(new am4charts.CircleBullet());
         bullet.circle.strokeWidth = 2;
         bullet.circle.radius = 4;
         bullet.circle.fill = am4core.color("#fff");
         var bullethover = bullet.states.create("hover");
-        bullethover.properties.scale = 1.3;
+        bullethover.properties.scale = 1.3;*/
 
         series.dataSource.events.on("done", (ev) => {
             series.data = ev.data[0].data;
@@ -68,7 +67,6 @@ am4core.ready(async function () {
     console.log(activeSensors);
 
     var scrollbarX = new am4core.Scrollbar();
-    scrollbarX.pos
     scrollbarX.marginBottom = 20;
     chart.scrollbarX = scrollbarX;
     chart.scrollbarX.startGrip.disabled = true;
@@ -125,13 +123,12 @@ am4core.ready(async function () {
             if (activeSensors.length > 5) {
                 console.log("slicing");
                 let current = activeSensors.shift();
-                console.log(current);
                 chart.map.getKey(current).hide();
             }
         }
     }
 
-    chart.legend = new am4charts.Legend();
+    /*chart.legend = new am4charts.Legend();
     chart.legend.useDefaultMarker = true;
     var marker = chart.legend.markers.template.children.getIndex(0);
     marker.cornerRadius(12, 12, 12, 12);
@@ -148,7 +145,7 @@ am4core.ready(async function () {
             //console.log(sensor_id + " is visible");
             makeActive(sensor_id);
         }
-    });
+    });*/
 
     // Add cursor
     chart.cursor = new am4charts.XYCursor();
@@ -159,7 +156,7 @@ am4core.ready(async function () {
     chart.cursor.lineX.fillOpacity = 0.1;
 
 
-    //MAP
+    //MAP --------------------------------------------------------------------------------------------------------------
 
     const mymap = L.map('map', {
         dragging: false,
@@ -184,9 +181,13 @@ am4core.ready(async function () {
             let sensor_id = x.target.options.title;
             if (marker.gdvStats.active) {
                 makeInactive(sensor_id);
+                let current = chart.map.getKey(sensor_id);
+                current.hide();
                 marker.gdvStats.active = false;
             } else {
                 makeActive(sensor_id);
+                let current = chart.map.getKey(sensor_id);
+                current.show();
                 marker.gdvStats.active = true;
             }
         })
@@ -198,7 +199,7 @@ am4core.ready(async function () {
         minZoom: 13,
         id: 'mapbox/streets-v11'
     }).addTo(mymap);
-
+// ---------------------------------------------------------------------------------------------------------------------
 }, "chartdiv", am4charts.XYChart);
 // end am4core.ready()
 
