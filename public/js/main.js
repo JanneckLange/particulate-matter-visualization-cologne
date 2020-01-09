@@ -48,6 +48,7 @@ am4core.ready(async function () {
         series.dataSource.url = path + "/?sensor=" + sensors[i];
         series.resolution = "";
         series.minBulletDistance = 30;
+
         /*var bullet = series.bullets.push(new am4charts.CircleBullet());
         bullet.circle.strokeWidth = 2;
         bullet.circle.radius = 4;
@@ -157,6 +158,36 @@ am4core.ready(async function () {
 
 
     //MAP --------------------------------------------------------------------------------------------------------------
+    function makeIcon(sensor_id, active) {
+        let color;
+        if(active) {
+            let current = chart.map.getKey(sensor_id);
+            color = current.stroke.hex;
+        } else {
+            color = '#a3a3a3';
+        }
+
+        const markerHtmlStyles = `
+          background-color: ${color};
+          width: 1rem;
+          height: 1rem;
+          display: block;
+          left: -1.5rem;
+          top: -1.5rem;
+          position: relative;
+          border-radius: 3rem 3rem 0;
+          transform: rotate(45deg);
+          border: 1px solid #FFFFFF`;
+
+        return L.divIcon({
+            className: sensor_id.toString(),
+            iconAnchor: [0, 24],
+            labelAnchor: [-6, 0],
+            popupAnchor: [0, -36],
+            html: `<span style="${markerHtmlStyles}" />`
+        });
+    }
+
 
     const mymap = L.map('map', {
         dragging: false,
@@ -171,6 +202,7 @@ am4core.ready(async function () {
             riseOnHover: true,
             title: sensorLocation._id,
             doubleClickZoom: false,
+            icon: makeIcon(sensorLocation._id, false),
         }).addTo(mymap);
 
         marker.gdvStats = {
@@ -180,11 +212,13 @@ am4core.ready(async function () {
         marker.on('click', (x) => {
             let sensor_id = x.target.options.title;
             if (marker.gdvStats.active) {
+                x.target.setIcon(makeIcon(sensor_id, false));
                 makeInactive(sensor_id);
                 let current = chart.map.getKey(sensor_id);
                 current.hide();
                 marker.gdvStats.active = false;
             } else {
+                x.target.setIcon(makeIcon(sensor_id, true));
                 makeActive(sensor_id);
                 let current = chart.map.getKey(sensor_id);
                 current.show();
@@ -192,7 +226,6 @@ am4core.ready(async function () {
             }
         })
     });
-
 
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 13,
