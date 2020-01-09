@@ -19,6 +19,8 @@ am4core.ready(async function () {
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
     let accuracy = "averageDataTime";
+    let currentMin;
+    let currentMax;
 
     dateAxis.groupData = true;
 
@@ -32,11 +34,21 @@ am4core.ready(async function () {
         series.dataFields.valueY = "P2";
         series.dataFields.dateX = "timestamp";
         series.tooltipText = "{P2}";
-        series.name = sensors[i];
+        series.strokeWidth = 2;
+        series.opacity = 0.7;
+        series.name = sensors[i].toString();
         series.id = sensors[i];
         series.dataSource.updateCurrentData = false;
         series.dataSource.url = path+"/?sensor=" + sensors[i];
         series.resolution = "";
+
+        series.minBulletDistance = 30;
+        var bullet = series.bullets.push(new am4charts.CircleBullet());
+        bullet.circle.strokeWidth = 2;
+        bullet.circle.radius = 4;
+        bullet.circle.fill = am4core.color("#fff");
+        var bullethover = bullet.states.create("hover");
+        bullethover.properties.scale = 1.3;
 
         series.dataSource.events.on("done", (ev) => {
             series.data = ev.data[0].data;
@@ -50,8 +62,13 @@ am4core.ready(async function () {
     console.log(activeSensors);
 
     var scrollbarX = new am4core.Scrollbar();
+    scrollbarX.pos
     scrollbarX.marginBottom = 20;
     chart.scrollbarX = scrollbarX;
+    chart.scrollbarX.startGrip.disabled = true;
+    chart.scrollbarX.endGrip.disabled = true;
+    chart.scrollbarX.thumb.minWidth = 50;
+
 
     chart.events.on("up", () => {
         updateData();
@@ -74,7 +91,7 @@ am4core.ready(async function () {
                 newAccuracy = "averageDataTime";
             }
 
-            if(newAccuracy !== accuracy) {
+            if(newAccuracy !== accuracy || (min < currentMin || max > currentMax) && newAccuracy !== accuracy){
                 console.log("updating data");
                 for (let i = 0; i < activeSensors.length; i++) {
                     let current = chart.map.getKey(activeSensors[i]);
@@ -82,6 +99,8 @@ am4core.ready(async function () {
                     current.data = data.data;
                 }
                 accuracy = newAccuracy;
+                currentMin = min;
+                currentMax = max;
             }
         }
     }
@@ -107,6 +126,12 @@ am4core.ready(async function () {
     }
 
     chart.legend = new am4charts.Legend();
+    chart.legend.useDefaultMarker = true;
+    var marker = chart.legend.markers.template.children.getIndex(0);
+    marker.cornerRadius(12, 12, 12, 12);
+    marker.strokeWidth = 2;
+    marker.strokeOpacity = 1;
+    marker.stroke = am4core.color("#ccc");
     chart.legend.itemContainers.template.events.on("hit", (ev) => {
         let sensor_id = ev.target.dataItem.dataContext.name;
         //somehow status updates to late..so we have to ask for the opposite -.-
