@@ -13,6 +13,14 @@ const sensors = [
 ];
 const accurateDataTime = 5 * 3600000;
 const hourlyDataTime = 7 * 24 * 3600000;
+const mongoProjection = {
+    projection: {
+        _id: 0,
+        lat: 0,
+        long: 0,
+        dataType: 0
+    }
+};
 
 router.get('/', function (req, res, next) {
     let min = req.query.min;
@@ -20,18 +28,16 @@ router.get('/', function (req, res, next) {
     let sensor = req.query.sensor;
 
     //check if sensor exists
-    if (!min && !max && !sensor) {
-        sendEverything(req, res, next);
-    } else if (!sensors.includes(parseInt(sensor))) {
+    if (!sensor || !sensors.includes(parseInt(sensor))) {
         res.send('sensor not available').status(400);
-    } else if (!min && !max) {
-        sendEverythingForOne(req, res, next)
+    } else if (!min && !max) {//send full sensor data when no min/max is given
+        sendEverything(req, res, next, {sensor_id: parseInt(sensor)})
     } else if (min > max) {
         res.send('min must be lower than max').status(400);
-    } else if (max - min < accurateDataTime) {
+    } else if (max - min < accurateDataTime) {//send hourly data when time range is smaller than accurateDataTime
         console.log('send accurate Data');
         sendAccurateDataTime(req, res, next);
-    } else if (max - min < hourlyDataTime) {
+    } else if (max - min < hourlyDataTime) {//send daily data when time range is smaller than hourlyDataTime
         console.log('send average Data (hour)');
         sendAverageDataTime(req, res, next, 'hourlyAVG');
     } else {
@@ -40,30 +46,17 @@ router.get('/', function (req, res, next) {
     }
 });
 
-router.get('/accurate', function (req, res, next) {
-    sendAccurateDataTime(req, res, next);
-});
-
-router.get('/average/hour', function (req, res, next) {
-    sendAverageDataTime(req, res, next, 'hourlyAVG');
-});
-
-router.get('/average/day', function (req, res, next) {
-    sendAverageDataTime(req, res, next, 'dailyAVG');
-});
-
-router.get('/sensors', function (req, res, next) {
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        let dbo = db.db("gdv");
-
-        MongoClient.connect(url, function (err, db) {
-            dbo.collection('dailyAVG').distinct('sensor_id').then((data) => {
-                res.send(data)
-            })
-        });
-    });
-});
+// router.get('/accurate', function (req, res, next) {
+//     sendAccurateDataTime(req, res, next);
+// });
+//
+// router.get('/average/hour', function (req, res, next) {
+//     sendAverageDataTime(req, res, next, 'hourlyAVG');
+// });
+//
+// router.get('/average/day', function (req, res, next) {
+//     sendAverageDataTime(req, res, next, 'dailyAVG');
+// });
 
 router.get('/info', function (req, res, next) {
     MongoClient.connect(url, function (err, db) {
@@ -107,11 +100,15 @@ function sendAccurateDataTime(req, res, next) {
                 $lt: parseInt(max)//max Date
             }
         };
-        dbo.collection("s" + sensor).find(query).toArray(function (err, result) {
-            if (err) throw err;
-            res.send(result);
-            db.close();
-        });
+        dbo
+            .collection("s" + sensor)
+            .find(query, mongoProjection)
+            .sort({timestamp: 1})
+            .toArray(function (err, result) {
+                if (err) throw err;
+                res.send({resolution: 'accurateDataTime', data: result});
+                db.close();
+            });
     });
 }
 
@@ -131,38 +128,32 @@ function sendAverageDataTime(req, res, next, accuracy) {
             },
             sensor_id: parseInt(sensor)
         };
-        dbo.collection(accuracy).find(query).sort({timestamp: 1}).toArray(function (err, result) {
-            if (err) throw err;
-            res.send(result);
-            db.close();
-        });
+        dbo
+            .collection(accuracy)
+            .find(query, mongoProjection)
+            .sort({timestamp: 1})
+            .toArray(function (err, result) {
+                if (err) throw err;
+                res.send({resolution: accuracy === 'hourlyAVG' ? 'hourlyDataTime' : 'averageDataTime', data: result});
+                db.close();
+            });
     });
 }
 
-function sendEverything(req, res, next) {
+function sendEverything(req, res, next, query) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         let dbo = db.db("gdv");
 
-        dbo.collection('dailyAVG').find().sort({timestamp: 1}).toArray(function (err, result) {
-            if (err) throw err;
-            res.send(result);
-            db.close();
-        });
-    });
-}
-
-function sendEverythingForOne(req, res, next) {
-    let sensor = req.query.sensor;
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        let dbo = db.db("gdv");
-
-        dbo.collection('dailyAVG').find({sensor_id: parseInt(sensor)}).sort({timestamp: 1}).toArray(function (err, result) {
-            if (err) throw err;
-            res.send(result);
-            db.close();
-        });
+        dbo
+            .collection('dailyAVG')
+            .find(query, mongoProjection)
+            .sort({timestamp: 1})
+            .toArray(function (err, result) {
+                if (err) throw err;
+                res.send({resolution: 'averageDataTime', data: result});
+                db.close();
+            });
     });
 }
 

@@ -7,7 +7,7 @@ require('log-timestamp');
 var indexRouter = require('./routes');
 var app = express();
 
-app.use(logger(':date[iso] - :method :url :status - :response-time ms'));
+app.use(logger(':date[iso] - :method :url :status - :response-time[0] ms'));
 // app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
