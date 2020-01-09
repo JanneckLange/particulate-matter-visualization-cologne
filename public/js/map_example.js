@@ -187,10 +187,10 @@ function mapInit() {
     // set map options
     var mapOptions = {
         center: {
-            lat: 39.043719,
-            lng: -99.887695
+            lat: 50.9372142,
+            lng: 6.9606245
         },
-        zoom: 4
+        zoom: 13
     };
 
     // create map instance
