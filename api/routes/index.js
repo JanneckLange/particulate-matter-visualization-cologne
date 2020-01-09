@@ -4,6 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017/";
 const accurateDataTime = 5 * 3600000;
 const hourlyDataTime = 7 * 24 * 3600000;
+const timeOffset = 24 * 3600000;
 const mongoProjection = {
     projection: {
         _id: 0,
@@ -100,8 +101,8 @@ router.get('/sensor', function (req, res, next) {
  */
 function sendAccurateDataTime(req, res) {
     let sensor = req.query.sensor;
-    let min = req.query.min;
-    let max = req.query.max;
+    let min = req.query.min - timeOffset;
+    let max = req.query.max + timeOffset;
 
     let query = {
         timestamp: {
@@ -127,8 +128,8 @@ function sendAccurateDataTime(req, res) {
  */
 function sendAverageDataTime(req, res, accuracy) {
     let sensor = req.query.sensor;
-    let min = req.query.min;
-    let max = req.query.max;
+    let min = req.query.min - timeOffset;
+    let max = req.query.max + timeOffset;
 
 
     let query = {
