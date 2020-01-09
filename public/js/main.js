@@ -10,6 +10,7 @@ am4core.ready(async function () {
     let dateAxis;
     let valueAxis;
     let slider;
+    let mymap;
 
     let accuracy = "averageDataTime";
     let currentMin;
@@ -136,11 +137,19 @@ am4core.ready(async function () {
     function makeActive(sensor_id) {
         if (!activeSensors.includes(sensor_id)) {
             activeSensors.push(sensor_id);
-
             if (activeSensors.length > 5) {
+                // to many sensors active, deactivate first one
                 console.log("slicing");
+                // remove graph
                 let current = activeSensors.shift();
                 chart.map.getKey(current).hide();
+                // change marker color
+                for(let i in mymap._layers) {
+                    let currentMarker = mymap._layers[i];
+                    if(currentMarker.options.title === current) {
+                        currentMarker.setIcon(makeIcon("", false));
+                    }
+                }
             }
         }
     }
@@ -176,7 +185,7 @@ am4core.ready(async function () {
         });
     }
 
-    const mymap = L.map('map', {
+    mymap = L.map('map', {
         dragging: false,
         scrollWheelZoom: false,
         touchZoom: false
@@ -199,7 +208,7 @@ am4core.ready(async function () {
         marker.on('click', async (x) => {
             let sensor_id = x.target.options.title;
             if (marker.gdvStats.active) {
-                x.target.setIcon(makeIcon(sensor_id, false));
+                x.target.setIcon(makeIcon("", false));
                 makeInactive(sensor_id);
                 let current = chart.map.getKey(sensor_id);
                 current.hide();
@@ -229,8 +238,8 @@ am4core.ready(async function () {
     }).addTo(mymap);
 
     initMainContainer();
-    initChart()
-
+    initChart();
+    console.log(mymap);
 // ---------------------------------------------------------------------------------------------------------------------
 }, "chartdiv", am4charts.XYChart);
 // end am4core.ready()
