@@ -80,6 +80,21 @@ router.get('/info', function (req, res, next) {
     });
 });
 
+router.get('/sensor', function (req, res, next) {
+    dbo.collection('dailyAVG').aggregate([
+        {
+            $group: {
+                _id: '$sensor_id',
+                lat: {$last: '$lat'},
+                long: {$last: '$long'}
+            }
+        },
+        {$sort: {_id: 1}}
+    ]).toArray((err, data) => {
+        res.send(data);
+    });
+});
+
 /**
  * send original sensor data
  * @param req
