@@ -17,6 +17,7 @@ am4core.ready(async function () {
     var chart = am4core.create("chartdiv", am4charts.XYChart);
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    dateAxis.dateFormatter.dateFormat = "d MMM, yyyy";
 
     let accuracy = "averageDataTime";
     let currentMin;
@@ -33,7 +34,7 @@ am4core.ready(async function () {
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = "P2";
         series.dataFields.dateX = "timestamp";
-        series.tooltipText = "{P2}";
+        series.tooltipText = "{dateX.formatDate('yyyy-mm-dd')}: P2: {valueY.formatNumber('#.00')}";
         series.strokeWidth = 2;
         series.opacity = 0.7;
         series.name = sensors[i].toString();
