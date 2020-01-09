@@ -2,17 +2,9 @@ const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017/";
-const sensors = [
-    1164, 2502, 3403, 3585, 3601,
-    3677, 5129, 5175, 5898, 9712,
-    10695, 10932, 11279, 11642, 12812,
-    13455, 13457, 14945, 15291, 17596,
-    18447, 18459, 18596, 19917, 19944,
-    23234, 24877, 28387, 28499, 30888,
-    32834, 35245
-];
 const accurateDataTime = 5 * 3600000;
 const hourlyDataTime = 7 * 24 * 3600000;
+const timeOffset = 24 * 3600000;
 const mongoProjection = {
     projection: {
         _id: 0,
@@ -26,12 +18,22 @@ const mongoConnectionOptions = {
     useUnifiedTopology: true
 };
 let dbo;
+let sensors;
 
+
+/**
+ * start Database Connection and update sensor list
+ */
 function startDatabase() {
     MongoClient.connect(url, mongoConnectionOptions, function (err, db) {
         if (err) throw err;
         dbo = db.db("gdv");
-        console.log('Database Connected')
+        console.log('Database Connected');
+
+        //update sensor list
+        dbo.collection('dailyAVG').distinct('sensor_id').then((sensorData) => {
+            sensors = sensorData;
+        });
     });
 }
 
@@ -59,25 +61,22 @@ router.get('/', function (req, res, next) {
     }
 });
 
-
 router.get('/info', function (req, res, next) {
-    dbo.collection('dailyAVG').distinct('sensor_id').then((sensorData) => {
-        dbo.collection('dailyAVG').find().sort({timestamp: 1}).limit(1).toArray((err, minData) => {
-            dbo.collection('dailyAVG').find().sort({timestamp: -1}).limit(1).toArray((err, maxData) => {
-                res.send({
-                    sensors: sensorData,
-                    min: minData[0].timestamp,
-                    max: maxData[0].timestamp,
-                    autoAccuracy: {
-                        accurate: hourlyDataTime,
-                        hourlyAverage: accurateDataTime,
-                        dailyAverage: null,
-                        description: "send data when time range between min and max timestamp is smaller than given value (milliseconds). Null value means everything else."
-                    }
-                });
+    dbo.collection('dailyAVG').find().sort({timestamp: 1}).limit(1).toArray((err, minData) => {
+        dbo.collection('dailyAVG').find().sort({timestamp: -1}).limit(1).toArray((err, maxData) => {
+            res.send({
+                sensors: sensors,
+                min: minData[0].timestamp,
+                max: maxData[0].timestamp,
+                autoAccuracy: {
+                    accurate: hourlyDataTime,
+                    hourlyAverage: accurateDataTime,
+                    dailyAverage: null,
+                    description: "send data when time range between min and max timestamp is smaller than given value (milliseconds). Null value means everything else."
+                }
             });
-        })
-    });
+        });
+    })
 });
 
 router.get('/sensor', function (req, res, next) {
@@ -102,8 +101,8 @@ router.get('/sensor', function (req, res, next) {
  */
 function sendAccurateDataTime(req, res) {
     let sensor = req.query.sensor;
-    let min = req.query.min;
-    let max = req.query.max;
+    let min = req.query.min - timeOffset;
+    let max = req.query.max + timeOffset;
 
     let query = {
         timestamp: {
@@ -129,8 +128,8 @@ function sendAccurateDataTime(req, res) {
  */
 function sendAverageDataTime(req, res, accuracy) {
     let sensor = req.query.sensor;
-    let min = req.query.min;
-    let max = req.query.max;
+    let min = req.query.min - timeOffset;
+    let max = req.query.max + timeOffset;
 
 
     let query = {
