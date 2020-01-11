@@ -84,18 +84,27 @@ router.get('/sensor', async function (req, res, next) {
 });
 
 router.get('/events', function (req, res, next) {
-    dbo.collection('events').find({},{projection:{_id:0,description:0,type:0}}).sort({date_start: 1}).toArray(async (err, data) => {
+    dbo.collection('events').find({}, {
+        projection: {
+            _id: 0,
+            description: 0,
+            type: 0
+        }
+    }).sort({date_start: 1}).toArray(async (err, data) => {
         const sensorMaxDistanceInKm = 0.5;
         let sensorCoordinates = await getCoordinatesFromSensors();
         let eventsWithSensors = [];
         data.forEach(event => {
             let sensorInRange = getSensorsInRange(event.lat, event.long, sensorMaxDistanceInKm, sensorCoordinates);
             if (sensorInRange.length > 0) {
-                eventsWithSensors.push({
-                    event: event,
-                    sensorMaxDistance: sensorMaxDistanceInKm,
-                    sensors: sensorInRange
-                });
+                // eventsWithSensors.push({
+                //     event: event,
+                //     sensorMaxDistance: sensorMaxDistanceInKm,
+                //     sensors: sensorInRange
+                // });
+                event.sensors = sensorInRange;
+                event.sensorMaxDistance = sensorMaxDistanceInKm;
+                eventsWithSensors.push(event);
             }
         });
         console.log(eventsWithSensors.length)
