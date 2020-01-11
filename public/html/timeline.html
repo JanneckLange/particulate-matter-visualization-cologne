@@ -1,0 +1,174 @@
+<!-- Styles -->
+<style>
+    #chartdiv {
+        max-width: 100%;
+        height: 500px;
+    }
+</style>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/plugins/timeline.js"></script>
+<script src="https://www.amcharts.com/lib/4/plugins/bullets.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+<!-- Chart code -->
+<script>
+    am4core.ready(function () {
+
+// Themes begin
+        am4core.useTheme(am4themes_animated);
+// Themes end
+
+        var alarm = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjQ1Ljc3M3B4IiBoZWlnaHQ9IjQ1Ljc3M3B4IiB2aWV3Qm94PSIwIDAgNDUuNzczIDQ1Ljc3MyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDUuNzczIDQ1Ljc3MzsiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik01LjA4MSwxMy43MzdjMi41ODItMy45NDIsNi42MDktNi44NDksMTEuMzItNy45ODhjMC4zNjMtMC4wODcsMC42NjItMC4zNDQsMC44MDItMC42ODkNCgkJCWMwLjE0MS0wLjM0NiwwLjEwNy0wLjczOC0wLjA5MS0xLjA1NUMxNS42MDQsMS42MDEsMTIuOTM2LDAsOS44ODgsMEM1LjE3NiwwLDEuMzU0LDMuODIsMS4zNTQsOC41MzJjMCwyLDAuNjkxLDMuODM3LDEuODQ1LDUuMjkNCgkJCWMwLjIzMSwwLjI5MywwLjU4OSwwLjQ1NSwwLjk2MiwwLjQzOFM0Ljg3NywxNC4wNDgsNS4wODEsMTMuNzM3eiIvPg0KCQk8cGF0aCBkPSJNMzUuODg2LDBjLTMuMDM0LDAtNS42OTMsMS41ODYtNy4yMDQsMy45NzRjLTAuMiwwLjMxNi0wLjIzNSwwLjcxMS0wLjA5NCwxLjA1OWMwLjE0MiwwLjM0OSwwLjQ0MiwwLjYwNSwwLjgwOSwwLjY5MQ0KCQkJYzQuNzI0LDEuMTEyLDguNzY1LDMuOTk5LDExLjM2OSw3LjkyOGMwLjIwNywwLjMxMiwwLjU1MiwwLjUwNSwwLjkyNywwLjUxOGMwLjM3NSwwLjAxNCwwLjczMS0wLjE1NCwwLjk2MS0wLjQ1MQ0KCQkJYzEuMTA1LTEuNDM2LDEuNzY2LTMuMjMyLDEuNzY2LTUuMTg2QzQ0LjQxNywzLjgyLDQwLjU5OCwwLDM1Ljg4NiwweiIvPg0KCQk8cGF0aCBkPSJNNDEuNzUyLDI2LjEzMmMwLTMuMjk0LTAuODU3LTYuMzktMi4zNTEtOS4wODRjLTIuNzY5LTQuOTktNy43NDItOC41NzctMTMuNTk1LTkuNDc1Yy0wLjkzMy0wLjE0My0xLjg4LTAuMjQtMi44NTMtMC4yNA0KCQkJYy0xLjAxNiwwLTIuMDA2LDAuMTA0LTIuOTc5LDAuMjZDMTQuMTQ2LDguNTI4LDkuMTk4LDEyLjEzLDYuNDU4LDE3LjEyNmMtMS40NjcsMi42NzYtMi4zMDQsNS43NDQtMi4zMDQsOS4wMDYNCgkJCWMwLDUuNTg2LDIuNDYzLDEwLjU5Nyw2LjM0MywxNC4wNDFsLTEuNTg0LDIuMjMxYy0wLjY4MiwwLjk2MS0wLjQ1NiwyLjI5MSwwLjUwNSwyLjk3NWMwLjM3NSwwLjI2NiwwLjgwNiwwLjM5NSwxLjIzMywwLjM5NQ0KCQkJYzAuNjY4LDAsMS4zMjYtMC4zMTMsMS43NDEtMC44OThsMS41ODMtMi4yM2MyLjY2OSwxLjQ1Nyw1LjcyOCwyLjI4Nyw4Ljk3OCwyLjI4N2MzLjI0OSwwLDYuMzA4LTAuODMsOC45NzctMi4yODdsMS41ODMsMi4yMw0KCQkJYzAuNDE2LDAuNTg2LDEuMDczLDAuODk4LDEuNzQxLDAuODk4YzAuNDI3LDAsMC44NTctMC4xMjksMS4yMzItMC4zOTVjMC45NjEtMC42ODQsMS4xODgtMi4wMTQsMC41MDYtMi45NzVsLTEuNTg0LTIuMjMxDQoJCQlDMzkuMjg4LDM2LjcyOSw0MS43NTIsMzEuNzE4LDQxLjc1MiwyNi4xMzJ6IE0yMi45NTQsMzkuNjc0Yy03LjQ2OCwwLTEzLjU0Mi02LjA3NC0xMy41NDItMTMuNTQyDQoJCQljMC0yLjMyOCwwLjU5MS00LjUxOSwxLjYyOS02LjQzNWMxLjk3Ni0zLjY0NCw1LjU4LTYuMjY5LDkuODI2LTYuOTNjMC42ODItMC4xMDYsMS4zNzUtMC4xNzgsMi4wODctMC4xNzgNCgkJCWMwLjY3LDAsMS4zMjUsMC4wNjUsMS45NywwLjE2YzQuMjgyLDAuNjI4LDcuOTI1LDMuMjUzLDkuOTI0LDYuOTEzYzEuMDUsMS45MjMsMS42NDcsNC4xMjYsMS42NDcsNi40NjkNCgkJCUMzNi40OTUsMzMuNiwzMC40MjEsMzkuNjc0LDIyLjk1NCwzOS42NzR6Ii8+DQoJCTxwYXRoIGQ9Ik0zMC41NCwyOS4zbC01LjE2Ni0zLjE5Yy0wLjEwNy0wLjYwNC0wLjQzNC0xLjEyNS0wLjg5My0xLjQ5NGwwLjIzNi02LjQ4MmMwLjAyOS0wLjgyOC0wLjYxNy0xLjUyMy0xLjQ0NC0xLjU1NA0KCQkJYy0wLjgyNS0wLjAzOC0xLjUyMywwLjYxNi0xLjU1NCwxLjQ0NGwtMC4yMzcsNi40ODljLTAuNjQxLDAuNDUyLTEuMDYzLDEuMTk2LTEuMDYzLDIuMDQxYzAsMS4zODEsMS4xMTksMi40OTksMi41LDIuNDk5DQoJCQljMC4zOTMsMCwwLjc2LTAuMDk5LDEuMDktMC4yNmw0Ljk1NSwzLjA2MmMwLjI0NiwwLjE1LDAuNTE5LDAuMjIzLDAuNzg3LDAuMjIzYzAuNTAzLDAsMC45OTMtMC4yNTIsMS4yNzgtMC43MTENCgkJCUMzMS40NjUsMzAuNjYsMzEuMjQ1LDI5LjczNiwzMC41NCwyOS4zeiIvPg0KCTwvZz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjwvc3ZnPg0K";
+        var water = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEyIDUxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik00NDMuODgyLDUuMjhDNDQwLjg0MiwxLjkyLDQzNi41NTQsMCw0MzIuMDEsMGgtMzUyYy00LjUxMiwwLTguODMyLDEuOTItMTEuODcyLDUuMjgNCgkJCWMtMy4wMDgsMy4zMjgtNC41MTIsNy44MDgtNC4wNjQsMTIuMzJsNDgsNDgwYzAuODMyLDguMTkyLDcuNzEyLDE0LjQsMTUuOTM2LDE0LjRoMjU2YzguMjI0LDAsMTUuMTA0LTYuMjA4LDE1LjkwNC0xNC40bDQ4LTQ4MA0KCQkJQzQ0OC4zOTQsMTMuMDg4LDQ0Ni45MjIsOC42MDgsNDQzLjg4Miw1LjI4eiBNNDAxLjI5LDE2Mi40OTZjLTQwLjY3MiwxMy4xNTItOTMuNiwxOS4yMzItMTM1LjEzNi0xNC44NDgNCgkJCWMtNTIuMDY0LTQyLjcyLTExNS44NzItMzUuMzYtMTU5LjEzNi0yMi40OTZMOTcuNzA2LDMyaDMxNi42MDhMNDAxLjI5LDE2Mi40OTZ6Ii8+DQoJPC9nPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPC9zdmc+DQo=";
+
+        am4core.ready(function () {
+            var chart = am4core.create("chartdiv", am4plugins_timeline.CurveChart);
+            chart.curveContainer.padding(100, 20, 50, 20);
+            chart.maskBullets = false;
+
+
+            var colorSet = new am4core.ColorSet();
+
+            chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm";
+            chart.dateFormatter.dateFormat = "HH";
+
+            chart.data = [{
+                "category": "",
+                "start": "2019-01-10 06:00",
+                "end": "2019-01-10 06:15",
+                "color": colorSet.getIndex(15),
+                "text": "Wake up!"
+            }, {
+                "category": "",
+                "start": "2019-01-10 06:15",
+                "end": "2019-01-10 06:30",
+                "color": colorSet.getIndex(14),
+                "text": "Drink water"
+            }];
+
+            chart.fontSize = 10;
+            chart.tooltipContainer.fontSize = 10;
+
+            var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+            categoryAxis.dataFields.category = "category";
+            categoryAxis.renderer.grid.template.disabled = true;
+            categoryAxis.renderer.labels.template.paddingRight = 25;
+            categoryAxis.renderer.minGridDistance = 10;
+            categoryAxis.renderer.innerRadius = 10;
+            categoryAxis.renderer.radius = 30;
+
+            var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+
+
+            dateAxis.renderer.points = [
+                {x: 0, y: -300},
+                {x: 0, y: 300},
+            ];
+
+
+            dateAxis.renderer.autoScale = false;
+            dateAxis.renderer.autoCenter = false;
+            dateAxis.renderer.minGridDistance = 70;
+            dateAxis.baseInterval = {count: 5, timeUnit: "minute"};
+            dateAxis.renderer.tooltipLocation = 0;
+            dateAxis.renderer.line.strokeDasharray = "1,4";
+            dateAxis.renderer.line.strokeOpacity = 0.5;
+            dateAxis.tooltip.background.fillOpacity = 0.2;
+            dateAxis.tooltip.background.cornerRadius = 5;
+            dateAxis.tooltip.label.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
+            dateAxis.tooltip.label.paddingTop = 7;
+            dateAxis.endLocation = 0;
+            dateAxis.startLocation = -0.5;
+            dateAxis.min = new Date(2019, 0, 9, 23, 55).getTime();
+            dateAxis.max = new Date(2019, 0, 11, 7, 10).getTime();
+
+            var labelTemplate = dateAxis.renderer.labels.template;
+            labelTemplate.verticalCenter = "middle";
+            labelTemplate.fillOpacity = 0.6;
+            labelTemplate.background.fill = new am4core.InterfaceColorSet().getFor("background");
+            labelTemplate.background.fillOpacity = 1;
+            labelTemplate.fill = new am4core.InterfaceColorSet().getFor("text");
+            labelTemplate.padding(7, 7, 7, 7);
+
+            var series = chart.series.push(new am4plugins_timeline.CurveColumnSeries());
+            series.columns.template.height = am4core.percent(30);
+
+            series.dataFields.openDateX = "start";
+            series.dataFields.dateX = "end";
+            series.dataFields.categoryY = "category";
+            series.baseAxis = categoryAxis;
+            series.columns.template.propertyFields.fill = "color"; // get color from data
+            series.columns.template.propertyFields.stroke = "color";
+            series.columns.template.strokeOpacity = 0;
+            series.columns.template.fillOpacity = 0.6;
+
+            var imageBullet1 = series.bullets.push(new am4plugins_bullets.PinBullet());
+            imageBullet1.background.radius = 18;
+            imageBullet1.locationX = 1;
+            imageBullet1.propertyFields.stroke = "color";
+            imageBullet1.background.propertyFields.fill = "color";
+            imageBullet1.circle.radius = am4core.percent(100);
+            imageBullet1.background.fillOpacity = 0.8;
+            imageBullet1.background.strokeOpacity = 0;
+            imageBullet1.dy = -2;
+            imageBullet1.background.pointerBaseWidth = 10;
+            imageBullet1.background.pointerLength = 10
+            imageBullet1.tooltipText = "{text}";
+
+            series.tooltip.pointerOrientation = "up";
+
+            imageBullet1.background.adapter.add("pointerAngle", (value, target) => {
+                if (target.dataItem) {
+                    var position = dateAxis.valueToPosition(target.dataItem.openDateX.getTime());
+                    return dateAxis.renderer.positionToAngle(position);
+                }
+                return value;
+            });
+
+            var hs = imageBullet1.states.create("hover")
+            hs.properties.scale = 1.3;
+            hs.properties.opacity = 1;
+
+            var textBullet = series.bullets.push(new am4charts.LabelBullet());
+            textBullet.label.propertyFields.text = "text";
+            textBullet.disabled = true;
+            textBullet.propertyFields.disabled = "textDisabled";
+            textBullet.label.strokeOpacity = 0;
+            textBullet.locationX = 1;
+            textBullet.dy = -100;
+            textBullet.label.textAlign = "middle";
+
+            chart.scrollbarX = new am4core.Scrollbar();
+            chart.scrollbarX.align = "center"
+            chart.scrollbarX.width = am4core.percent(75);
+            chart.scrollbarX.parent = chart.curveContainer;
+            chart.scrollbarX.height = 300;
+            chart.scrollbarX.orientation = "vertical";
+            chart.scrollbarX.x = 128;
+            chart.scrollbarX.y = -140;
+            chart.scrollbarX.isMeasured = false;
+            chart.scrollbarX.opacity = 0.5;
+
+            var cursor = new am4plugins_timeline.CurveCursor();
+            chart.cursor = cursor;
+            cursor.xAxis = dateAxis;
+            cursor.yAxis = categoryAxis;
+            cursor.lineY.disabled = true;
+            cursor.lineX.disabled = true;
+
+            dateAxis.renderer.tooltipLocation2 = 0;
+            categoryAxis.cursorTooltipEnabled = false;
+
+            chart.zoomOutButton.disabled = true;
+        });
+
+
+
+    }); // end am4core.ready()
+</script>
+
+<!-- HTML -->
+<div id="chartdiv"></div>
