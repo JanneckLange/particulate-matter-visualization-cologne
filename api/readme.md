@@ -4,6 +4,7 @@
 * Get all average data for one sensor: '/api?sensor=[sensor_id]'
 * Get GPS Position for all sensors: '/api/sensor'
 * Get events with sensors in range: '/api/events'
+* Get events with sensors in range: '/api/weather?min=[timestamp]&max=[timestamp]'
 
 ## Data ##
 ### Particulate matter ###

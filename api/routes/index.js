@@ -107,8 +107,44 @@ router.get('/events', function (req, res, next) {
                 eventsWithSensors.push(event);
             }
         });
-        console.log(eventsWithSensors.length)
+        // console.log(eventsWithSensors.length):
         res.send(eventsWithSensors)
+    });
+});
+
+router.get('/weather', function (req, res, next) {
+    let min = req.query.min;
+    let max = req.query.max;
+    let query = {
+        date: {
+            $gte: parseInt(min),//min Date
+            $lt: parseInt(max)//max Date
+        }
+    };
+    let projection = {
+        projection: {
+            _id: 0
+        }
+    }
+
+
+    dbo.collection('weatherAir_Converted').find(query, projection).toArray(function (err, data_air) {
+        if (err) throw err;
+        dbo.collection('weatherNiederschlag_Converted').find(query, projection).toArray(function (err, data_nie) {
+            if (err) throw err;
+            dbo.collection('weatherSolar_Converted').find(query, projection).toArray(function (err, data_sol) {
+                if (err) throw err;
+                dbo.collection('weatherWind_Converted').find(query, projection).toArray(function (err, data_win) {
+                    if (err) throw err;
+                    res.send({
+                        air: data_air,
+                        niederschlag: data_nie,
+                        solar: data_sol,
+                        wind: data_win
+                    });
+                });
+            });
+        });
     });
 });
 
