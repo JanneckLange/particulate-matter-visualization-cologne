@@ -6,7 +6,8 @@
     "find": "node findData.js",
     "calcAverage": "node calcAverage.js",
     "fillCollection": "node fillCollection.js",
-    "loadEvents": "node loadEvents.js"
+    "loadEvents": "node loadEvents.js",
+    "dateConverter": "node dateConverter.js"
   },
   "author": "",
   "license": "ISC",
