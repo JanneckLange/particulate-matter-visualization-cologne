@@ -113,6 +113,143 @@ router.get('/events', function (req, res, next) {
 });
 
 router.get('/weather', function (req, res, next) {
+    const maxTimeZone = 31 * 24 * 3600000;//31 Days
+    let min = req.query.min;
+    let max = req.query.max;
+
+    if (!min || !max) {
+        res.send('min/max missing').status(400);
+    } else if (max - min < maxTimeZone) {
+        getAccurateWeatherData(req, res, next);
+    } else {
+        getAverageWeatherData(req, res, next);
+    }
+});
+
+function getAverageWeatherData(req, res, next) {
+    let min = parseInt(req.query.min);
+    let max = parseInt(req.query.max);
+
+    dbo.collection('weatherAir_converted').aggregate([
+        {$match: {date: {$gte: min, $lt: max}}},
+        {
+            $project: {
+                date: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: {$toDate: {$toLong: "$date"}}
+                    }
+                }, timestamp: "$date",
+                Luftdruck: '$Luftdruck',
+                Lufttemperatur1: '$Lufttemperatur1',
+                // Lufttemperatur2: '$Lufttemperatur2',
+                Luftfeuchte: '$Luftfeuchte',
+                // Taupunkttemperatur: '$Taupunkttemperatur',
+            }
+        },
+        {
+            $group: {
+                _id: '$date',
+                date: {$first: '$timestamp'},
+                Luftdruck: {$avg: '$Luftdruck'},
+                Lufttemperatur1: {$avg: '$Lufttemperatur1'},
+                // Lufttemperatur2: {$avg: '$Lufttemperatur2'},
+                Luftfeuchte: {$avg: '$Luftfeuchte'},
+                // Taupunkttemperatur: {$avg: '$Taupunkttemperatur'},
+            }
+        },
+        {$sort: {_id: 1}}
+    ]).toArray(function (err, data_air) {
+        if (err) throw err;
+        dbo.collection('weatherNiederschlag_converted').aggregate([
+            {$match: {date: {$gte: min, $lt: max}}},
+            {
+                $project: {
+                    date: {
+                        $dateToString: {
+                            format: "%Y-%m-%d",
+                            date: {$toDate: {$toLong: "$date"}}
+                        }
+                    }, timestamp: "$date",
+                    Niederschlag: '$Niederschlag',
+                    Niederschlagsdauer: '$Niederschlagsdauer'
+                }
+            },
+            {
+                $group: {
+                    _id: '$date',
+                    date: {$first: '$timestamp'},
+                    Niederschlag: {$avg: '$Niederschlag'},
+                    Niederschlagsdauer: {$sum: '$Niederschlagsdauer'}
+                }
+            },
+            {$sort: {_id: 1}}
+        ]).toArray(function (err, data_nie) {
+            if (err) throw err;
+            dbo.collection('weatherSolar_converted').aggregate([
+                {$match: {date: {$gte: min, $lt: max}}},
+                {
+                    $project: {
+                        date: {
+                            $dateToString: {
+                                format: "%Y-%m-%d",
+                                date: {$toDate: {$toLong: "$date"}}
+                            }
+                        },
+                        timestamp: "$date",
+                        Globalstrahlung: '$Globalstrahlung',
+                        Solarstrahlung: '$Solarstrahlung',
+                        Direktstrahlung: '$Direktstrahlung',
+                        Sonnenscheindauer: '$Sonnenscheindauer',
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$date',
+                        date: {$first: '$timestamp'},
+                        Globalstrahlung: {$avg: '$Globalstrahlung'},
+                        Solarstrahlung: {$avg: '$Solarstrahlung'},
+                        Direktstrahlung: {$avg: '$Direktstrahlung'},
+                        Sonnenscheindauer: {$sum: '$Sonnenscheindauer'},
+                    }
+                },
+                {$sort: {_id: 1}}
+            ]).toArray(function (err, data_sol) {
+                if (err) throw err;
+                dbo.collection('weatherWind_converted').aggregate([
+                    {$match: {date: {$gte: min, $lt: max}}},
+                    {
+                        $project: {
+                            date: {
+                                $dateToString: {
+                                    format: "%Y-%m-%d",
+                                    date: {$toDate: {$toLong: "$date"}}
+                                }
+                            }, timestamp: "$date",
+                            Windstaerke: '$Windstaerke',
+                            Windrichtung: '$Windrichtung'
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$date',
+                            date: {$first: '$timestamp'},
+                            Windstaerke: {$avg: '$Windstaerke'},
+                            Windrichtung: {$avg: '$Windrichtung'}
+                        }
+                    },
+                    {$sort: {_id: 1}}
+                ]).toArray(function (err, data_win) {
+                    if (err) throw err;
+
+                    res.send({type: 'avg', data: combineWeatherData(data_air, data_nie, data_sol, data_win)});
+                });
+            });
+        });
+    });
+}
+
+function getAccurateWeatherData(req, res, next) {
     let min = req.query.min;
     let max = req.query.max;
     let query = {
@@ -125,28 +262,56 @@ router.get('/weather', function (req, res, next) {
         projection: {
             _id: 0
         }
-    }
+    };
 
 
-    dbo.collection('weatherAir_Converted').find(query, projection).toArray(function (err, data_air) {
+    dbo.collection('weatherAir_converted').find(query, projection).sort({date: 1}).toArray(function (err, data_air) {
         if (err) throw err;
-        dbo.collection('weatherNiederschlag_Converted').find(query, projection).toArray(function (err, data_nie) {
+        dbo.collection('weatherNiederschlag_converted').find(query, projection).sort({date: 1}).toArray(function (err, data_nie) {
             if (err) throw err;
-            dbo.collection('weatherSolar_Converted').find(query, projection).toArray(function (err, data_sol) {
+            dbo.collection('weatherSolar_converted').find(query, projection).sort({date: 1}).toArray(function (err, data_sol) {
                 if (err) throw err;
-                dbo.collection('weatherWind_Converted').find(query, projection).toArray(function (err, data_win) {
+                dbo.collection('weatherWind_converted').find(query, projection).sort({date: 1}).toArray(function (err, data_win) {
                     if (err) throw err;
-                    res.send({
-                        air: data_air,
-                        niederschlag: data_nie,
-                        solar: data_sol,
-                        wind: data_win
-                    });
+                    res.send({type: 'acc', data: combineWeatherData(data_air, data_nie, data_sol, data_win)});
                 });
             });
         });
     });
-});
+}
+
+function combineWeatherData(data_air, data_nie, data_sol, data_win) {
+    let weather = [];
+
+    data_air.forEach(airDat => {
+        let nie = data_nie.find(x => x._id === airDat._id);
+        let sol = data_sol.find(x => x._id === airDat._id);
+        let win = data_win.find(x => x._id === airDat._id);
+
+        weather.push({
+            dateString: (airDat._id) ? airDat._id : '',
+            date: airDat.date,
+
+            Luftdruck: airDat.Luftdruck,
+            Lufttemperatur1: airDat.Lufttemperatur1,
+            // Lufttemperatur2: airDat.Lufttemperatur2,
+            Luftfeuchte: airDat.Luftfeuchte,
+            // Taupunkttemperatur: airDat.Taupunkttemperatur,
+
+            Niederschlagsdauer: (nie) ? nie.Niederschlagsdauer : null,
+            Niederschlag: (nie) ? nie.Niederschlag : null,
+
+            Globalstrahlung: (sol) ? sol.Globalstrahlung : null,
+            Solarstrahlung: (sol) ? sol.Solarstrahlung : null,
+            Direktstrahlung: (sol) ? sol.Direktstrahlung : null,
+            Sonnenscheindauer: (sol) ? sol.Sonnenscheindauer : null,
+
+            Windstaerke: (win) ? win.Windstaerke : null,
+            Windrichtung: (win) ? win.Windrichtung : null
+        });
+    });
+    return weather;
+}
 
 function getSensorsInRange(eventLat, eventLong, range, sensors) {
     let sensorsInRange = [];
