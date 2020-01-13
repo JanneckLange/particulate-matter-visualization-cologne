@@ -39,7 +39,7 @@ am4core.ready(async function () {
         valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         dateAxis.dateFormatter.dateFormat = "d MMM, yyyy";
         dateAxis.groupData = true;
-        // dateAxis.baseInterval = {count: 1, timeUnit: "day"};
+        setDataAxisProperties();
         // -------------------------------------------------------------------------------------------------------------
 
         // CREATE SERIES -----------------------------------------------------------------------------------------------
@@ -50,7 +50,10 @@ am4core.ready(async function () {
             let series = chart.series.push(new am4charts.LineSeries());
             series.dataFields.valueY = "P2";
             series.dataFields.dateX = "timestamp";
-            series.tooltipText = "{dateX.formatDate('yyyy-mm-dd')}: P2: {valueY.formatNumber('#.00')}";
+            series.tooltipText = "{dateX.formatDate('yyyy-MM-dd')}: P2: {valueY.formatNumber('#.00')}";
+            series.tooltipText = `[bold]{dateX.formatDate('dd.MM.yyyy')}[/]
+P2: {valueY.formatNumber('#.00')}
+Niederschlag: noll`;
             series.strokeWidth = 2;
             series.opacity = 0.7;
             series.name = sensors[i].toString();
@@ -64,6 +67,7 @@ am4core.ready(async function () {
             series.dataSource.events.on("done", (ev) => {
                 series.data = ev.data[0].data;
                 series.resolution = ev.data[0].resolution;
+                setDataAxisProperties();
             });
         }
         // -------------------------------------------------------------------------------------------------------------
@@ -81,6 +85,17 @@ am4core.ready(async function () {
         slider = mainContainer.createChild(am4core.Slider);
 
         // -------------------------------------------------------------------------------------------------------------
+    }
+
+    function setDataAxisProperties() {
+        dateAxis.dateFormats.setKey("month", "MMMM YYYY");
+        dateAxis.dateFormats.setKey("day", "dd.MM.YYYY");
+        dateAxis.dateFormats.setKey("hour", "HH:mm");
+        dateAxis.dateFormats.setKey("minute", "HH:mm");
+        dateAxis.periodChangeDateFormats.setKey("month", "MMMM [bold]yyyy[/]");
+        dateAxis.periodChangeDateFormats.setKey("day", "dd. [bold]MMMM[/] YYYY");
+        dateAxis.periodChangeDateFormats.setKey("hour", "[bold]dd. MMM[/] HH:mm");
+        dateAxis.periodChangeDateFormats.setKey("minute", "[bold]dd. MMM[/] HH:mm");
     }
 
     async function getData(min, max, sensor_id) {
@@ -145,9 +160,9 @@ am4core.ready(async function () {
                 let current = activeSensors.shift();
                 chart.map.getKey(current).hide();
                 // change marker color
-                for(let i in mymap._layers) {
+                for (let i in mymap._layers) {
                     let currentMarker = mymap._layers[i];
-                    if(currentMarker.options.title === current) {
+                    if (currentMarker.options.title === current) {
                         currentMarker.setIcon(makeIcon("", false));
                     }
                 }
@@ -158,7 +173,7 @@ am4core.ready(async function () {
     //MAP --------------------------------------------------------------------------------------------------------------
     function makeIcon(sensor_id, active) {
         let color;
-        if(active) {
+        if (active) {
             let current = chart.map.getKey(sensor_id);
             color = current.stroke.hex;
         } else {
