@@ -39,6 +39,7 @@ am4core.ready(async function () {
         valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         dateAxis.dateFormatter.dateFormat = "d MMM, yyyy";
         dateAxis.groupData = true;
+        // dateAxis.baseInterval = {count: 1, timeUnit: "day"};
         // -------------------------------------------------------------------------------------------------------------
 
         // CREATE SERIES -----------------------------------------------------------------------------------------------

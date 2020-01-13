@@ -15,15 +15,21 @@ let databaseValues = {
         Direktstrahlung: '$Direktstrahlung',
         Sonnenscheindauer: '$Sonnenscheindauer'
     },
-    weatherNiederschlag: {Niederschlagsdauer: '$Niederschlagsdauer', Niederschlag: '$Niederschlag'},
-    weatherWind: {Windstaerke: '$Windstaerke', Windrichtung: '$Windrichtung'}
-}
+    weatherNiederschlag: {
+        Niederschlagsdauer: '$Niederschlagsdauer',
+        Niederschlag: '$Niederschlag'
+    },
+    weatherWind: {
+        Windstaerke: '$Windstaerke',
+        Windrichtung: '$Windrichtung'
+    }
+};
 
 MongoClient.connect(url, async function (err, db) {
     if (err) throw err;
     var dbo = db.db("gdv");
     // ['weatherAir', 'weatherNiederschlag', 'weatherSolar', 'weatherWind']
-    let database = 'weatherWind';
+    let database = 'weatherAir';
     dbo.collection(database).aggregate([
         {
             $project: {
@@ -33,7 +39,13 @@ MongoClient.connect(url, async function (err, db) {
                             dateString: "$MESS_DATUM"
                         }
                     }
-                },  Windstaerke: '$Windstaerke', Windrichtung: '$Windrichtung'
+                },
+                dateString: '$MESS_DATUM',
+                Luftdruck: '$Luftdruck',
+                Lufttemperatur1: '$Lufttemperatur1',
+                Lufttemperatur2: '$Lufttemperatur2',
+                Luftfeuchte: '$Luftfeuchte',
+                Taupunkttemperatur: '$Taupunkttemperatur'
             }
         }
     ]).toArray(function (err, res) {
@@ -41,7 +53,7 @@ MongoClient.connect(url, async function (err, db) {
             throw err;
         // console.log(res)
         res.forEach((data) => {
-            dbo.collection(database + "_Converted").insertOne(data, function (err, res) {
+            dbo.collection(database + "_converted").insertOne(data, function (err, res) {
                 if (err) throw err;
                 console.log('inserted');
             });
