@@ -82,6 +82,7 @@ am4core.ready(async function () {
         weather.name = "weather";
         weather.id = "weather";
         weather.groupFields.valueY = "sum";
+        weather.tooltipText = `Niederschlag: {valueY.formatNumber('#.00')}mm`;
 
         weather.dataSource.events.on("done", (ev) => {
             ev.data[0].data.P2 += 3600000;
@@ -100,8 +101,7 @@ am4core.ready(async function () {
             series.dataFields.dateX = "timestamp";
             series.tooltipText = "{dateX.formatDate('yyyy-MM-dd')}: P2: {valueY.formatNumber('#.00')}";
             series.tooltipText = `[bold]{dateX.formatDate('dd.MM.yyyy')}[/]
-P2: {valueY.formatNumber('#.00')}
-Niederschlag: noll`;
+P2: {valueY.formatNumber('#.00')}`;
             series.strokeWidth = 2;
             series.opacity = 0.7;
             series.yAxis = dirtAxis;
