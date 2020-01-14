@@ -43,7 +43,7 @@ am4core.ready(async function () {
 
     async function initChart() {
         // CREATE CHART ------------------------------------------------------------------------------------------------
-        chart = mainContainer.createChild(am4charts.XYChart);
+        chart = am4core.create("chartdiv", (am4charts.XYChart));
         chart.scrollbarX = new am4core.Scrollbar();
         chart.zoomOutButton.disabled = true;
         chart.events.on("up", () => {
@@ -164,8 +164,8 @@ Niederschlag: noll`;
 
     function initTimeline() {
         //am4core.useTheme(am4themes_animated);
-        timeLineChart = timeLineContainer.createChild(am4plugins_timeline.SerpentineChart);
-        //timeLineChart.curveContainer.padding(20, 20, 20, 20);
+        timeLineChart = am4core.create("timeLineDiv", am4plugins_timeline.SerpentineChart);
+        timeLineChart.curveContainer.padding(20, 20, 20, 20);
         timeLineChart.levelCount = 4;
         timeLineChart.orientation = "vertical";
         timeLineChart.yAxisRadius = am4core.percent(45);
@@ -799,8 +799,8 @@ Niederschlag: noll`;
     }).addTo(myMap);
 
     //initMainContainer();
-    initTimelineContainer();
-    //initChart();
+    //initTimelineContainer();
+    initChart();
     initTimeline()
 // ---------------------------------------------------------------------------------------------------------------------
 });
