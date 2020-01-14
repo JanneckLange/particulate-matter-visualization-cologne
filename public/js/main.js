@@ -364,6 +364,17 @@ Niederschlag: noll`;
                 ],
                 "sensorMaxDistance": 0.5,
                 "category": ""
+            }, {
+                "name": "CSD",
+                "date_start": 1562500800000,
+                "date_end": 1562522400000,
+                "lat": 50.9358564,
+                "long": 6.9614686,
+                "sensors": [
+                    11279, 19917, 3677, 3585
+                ],
+                "sensorMaxDistance": 0.5,
+                "category": ""
             },
             {
                 "name": "Straßenfest Venloer Straße",
