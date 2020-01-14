@@ -561,6 +561,14 @@ am4core.ready(function () {
     timelineEventSeries.columns.template.strokeOpacity = 0;
 
     timelineEventSeries.columns.template.events.on("hit", function(ev) {
+        let sensors = ev.target.dataItem._dataContext.sensors; // int[]
+        let date_start = ev.target.dataItem._dataContext.date_start; // double - timestamp
+        let date_end = ev.target.dataItem._dataContext.date_end; // double - timestamp
+        let lat = ev.target.dataItem._dataContext.lat; // double (when you want to set focus on map)
+        let long = ev.target.dataItem._dataContext.long; // double (when you want to set focus on map)
+
+        //todo select sensors
+        //todo select timespan
         console.log(ev.target.dataItem._dataContext);
     });
 
@@ -583,6 +591,6 @@ am4core.ready(function () {
     categoryAxis.cursorTooltipEnabled = false;
     timelineDateAxis.cursorTooltipEnabled = false;
 
-}, "chartdiv", am4charts.XYChart); // end am4core.ready()
+}); // end am4core.ready()
 
 
