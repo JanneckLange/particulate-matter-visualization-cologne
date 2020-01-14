@@ -25,22 +25,6 @@ am4core.ready(async function () {
     let currentWeatherMin;
     let currentWeatherMax;
 
-    function initMainContainer() {
-        mainContainer = am4core.create("chartdiv", am4core.Container);
-        mainContainer.background.fillOpacity = 0.3;
-        mainContainer.background.fill = am4core.color("#79b8df");
-        mainContainer.width = am4core.percent(100);
-        mainContainer.height = am4core.percent(100);
-    }
-
-    function initTimelineContainer() {
-        timeLineContainer = am4core.create("timeLineDiv", am4core.Container);
-        timeLineContainer.background.fillOpacity = 0.3;
-        timeLineContainer.background.fill = am4core.color("#79b8df");
-        timeLineContainer.width = am4core.percent(100);
-        timeLineContainer.height = am4core.percent(100);
-    }
-
     async function initChart() {
         // CREATE CHART ------------------------------------------------------------------------------------------------
         chart = am4core.create("chartdiv", (am4charts.XYChart));
@@ -533,6 +517,8 @@ Niederschlag: noll`;
 
         eventSeries.strokeOpacity = 0;
 
+        eventSeries.on
+
         let bullet = eventSeries.bullets.push(new am4charts.CircleBullet());
 
         let circle = bullet.createChild(am4core.Circle);
@@ -798,10 +784,8 @@ Niederschlag: noll`;
         id: 'mapbox/streets-v11'
     }).addTo(myMap);
 
-    //initMainContainer();
-    //initTimelineContainer();
+    initTimeline();
     initChart();
-    initTimeline()
 // ---------------------------------------------------------------------------------------------------------------------
 });
 
