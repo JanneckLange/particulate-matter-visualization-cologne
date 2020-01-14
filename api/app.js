@@ -4,7 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('log-timestamp');
 
-var indexRouter = require('./routes');
+var indexRouter = require('./routes/api');
 var app = express();
 
 app.use(logger(':date[iso] - :method :url :status - :response-time[0] ms'));

@@ -118,7 +118,8 @@ router.get('/weather', function (req, res, next) {
     let max = req.query.max;
 
     if (!min || !max) {
-        res.send('min/max missing').status(400);
+        // getAccurateWeatherData(req, res, next);
+        getAverageWeatherData(req, res, next)
     } else if (max - min < maxTimeZone) {
         getAccurateWeatherData(req, res, next);
     } else {
@@ -127,8 +128,8 @@ router.get('/weather', function (req, res, next) {
 });
 
 function getAverageWeatherData(req, res, next) {
-    let min = parseInt(req.query.min?req.query.min:'0');
-    let max = parseInt(req.query.max?req.query.max:'1678933322000');
+    let min = parseInt(req.query.min ? req.query.min : '0');
+    let max = parseInt(req.query.max ? req.query.max : '1678933322000');
 
     dbo.collection('weatherAir_converted').aggregate([
         {$match: {date: {$gte: min, $lt: max}}},
@@ -252,8 +253,8 @@ function getAverageWeatherData(req, res, next) {
 function getAccurateWeatherData(req, res, next) {
     // let min = req.query.min;
     // let max = req.query.max;
-    let min = parseInt(req.query.min?req.query.min:'0');
-    let max = parseInt(req.query.max?req.query.max:'1678933322000');
+    let min = parseInt(req.query.min ? req.query.min : '0');
+    let max = parseInt(req.query.max ? req.query.max : '1678933322000');
     let query = {
         date: {
             $gte: min,//min Date
@@ -376,14 +377,14 @@ function sendAccurateDataTime(req, res) {
  */
 function sendAverageDataTime(req, res, accuracy) {
     let sensor = req.query.sensor;
-    let min = req.query.min - timeOffset;
-    let max = req.query.max + timeOffset;
+    let min = parseInt(req.query.min) - timeOffset;
+    let max = parseInt(req.query.max) + timeOffset;
 
 
     let query = {
         timestamp: {
-            $gte: parseInt(min),//min Date
-            $lt: parseInt(max)//max Date
+            $gte: min,//min Date
+            $lt: max//max Date
         },
         sensor_id: parseInt(sensor)
     };
