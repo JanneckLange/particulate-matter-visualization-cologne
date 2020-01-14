@@ -29,7 +29,7 @@ am4core.ready(async function () {
         // CREATE CHART ------------------------------------------------------------------------------------------------
         chart = am4core.create("chartdiv", (am4charts.XYChart));
         chart.scrollbarX = new am4core.Scrollbar();
-        chart.zoomOutButton.disabled = true;
+        chart.zoomOutButton.disabled = false;
         chart.events.on("up", () => {
             // necessary because min/max zoom level updates slow
             setTimeout(() => updateData(), 200);
@@ -123,7 +123,7 @@ Niederschlag: noll`;
         chart.cursor.lineX.strokeOpacity = 0;
         chart.cursor.lineX.fill = am4core.color("#000");
         chart.cursor.lineX.fillOpacity = 0.1;
-        chart.cursor.behavior = "panX";
+        chart.cursor.behavior = "zoomX";
         // -------------------------------------------------------------------------------------------------------------
 
         let lowerRange = dirtAxis.axisRanges.create();
@@ -587,7 +587,40 @@ Niederschlag: noll`;
         });
 
         bullet.events.on("hit", (event) => {
-            console.log(event.target);
+            makeInactive("", true);
+            let sensors = event.target.dataItem.dataContext.sensors;
+            for(let i=0; i < sensors.length; i++) {
+                makeActive(sensors[i]);
+            }
+            let min_date = event.target.dataItem.dataContext.date_start;
+            let max_date = event.target.dataItem.dataContext.date_end;
+            let middle = (min_date + max_date) / 2;
+            console.log(min_date + ", " + max_date);
+            //dirtDateAxis.zoomToDates(min_date, max_date);
+            //weatherDateAxis.zoomToDates(min_date, max_date);
+            dirtDateAxis.axisRanges.clear();
+
+            let lowerRange = dirtDateAxis.axisRanges.create();
+            lowerRange.date = new Date(min_date + 1000*3600);
+            lowerRange.grid.stroke = am4core.color("#396478");
+            lowerRange.grid.strokeWidth = 2;
+            lowerRange.grid.strokeOpacity = 1;
+
+
+            let upperRange = dirtDateAxis.axisRanges.create();
+            upperRange.date = new Date(max_date + 1000*3600);
+            upperRange.grid.stroke = am4core.color("#396478");
+            upperRange.grid.strokeWidth = 2;
+            upperRange.grid.strokeOpacity = 1;
+
+
+            var eventMarker = dirtDateAxis.axisRanges.create();
+            eventMarker.date = new Date(middle + 1000*3600);
+            eventMarker.bullet = new am4core.Triangle();
+            eventMarker.bullet.width = 15;
+            eventMarker.bullet.height = 11;
+            eventMarker.bullet.fill = am4core.color("#c00");
+            eventMarker.bullet.horizontalCenter = "middle";
         });
 
         let cursor = new am4plugins_timeline.CurveCursor();
@@ -687,14 +720,43 @@ Niederschlag: noll`;
         }
     }
 
-    function makeInactive(sensor_id) {
-        const index = activeSensors.indexOf(sensor_id);
-        if (index > -1) {
-            activeSensors.splice(index, 1);
+    function makeInactive(sensor_id, all) {
+        if (all) {
+            for(let i=0; i< activeSensors.length; i++) {
+                let current = chart.map.getKey(activeSensors[i]);
+                current.hide();
+            }
+            for(let i in myMap._layers) {
+                let currentMarker = myMap._layers[i];
+                // make sure it is a marker
+                if (currentMarker.options.riseOnHover) {
+                    currentMarker.setIcon(makeIcon("", false));
+                    currentMarker.gdvStats.active = false;
+                }
+            }
+            activeSensors = [];
+        } else {
+            const index = activeSensors.indexOf(sensor_id);
+            if (index > -1) {
+                activeSensors.splice(index, 1);
+            }
+            let current = chart.map.getKey(sensor_id);
+            current.hide();
+
+            for(let i in myMap._layers) {
+                let currentMarker = myMap._layers[i];
+                // make sure it is a marker
+                if (currentMarker.options.riseOnHover) {
+                    if (currentMarker.options.title === sensor_id) {
+                        currentMarker.setIcon(makeIcon("", false));
+                        currentMarker.gdvStats.active = false;
+                    }
+                }
+            }
         }
     }
 
-    function makeActive(sensor_id) {
+    async function makeActive(sensor_id) {
         if (!activeSensors.includes(sensor_id)) {
             activeSensors.push(sensor_id);
             if (activeSensors.length > 5) {
@@ -708,9 +770,27 @@ Niederschlag: noll`;
                     let currentMarker = myMap._layers[i];
                     if(currentMarker.options.title === current) {
                         currentMarker.setIcon(makeIcon("", false));
+                        currentMarker.gdvStats.active = false;
                     }
                 }
             }
+            let current = chart.map.getKey(sensor_id);
+            if (current.resolution !== accuracy) {
+                let basic = chart.map.getKey(activeSensors[0]);
+                let min = basic.xAxis.minZoomed;
+                let max = basic.xAxis.maxZoomed;
+                console.log("series needs update!");
+                let data = await getData(min, max, sensor_id);
+                current.data = data.data
+            }
+            for(let i in myMap._layers) {
+                let currentMarker = myMap._layers[i];
+                if(currentMarker.options.title === sensor_id) {
+                    currentMarker.setIcon(makeIcon(sensor_id, true));
+                    currentMarker.gdvStats.active = true;
+                }
+            }
+            current.show();
         }
     }
 
@@ -768,25 +848,14 @@ Niederschlag: noll`;
         marker.on('click', async (x) => {
             let sensor_id = x.target.options.title;
             if (marker.gdvStats.active) {
-                x.target.setIcon(makeIcon("", false));
-                makeInactive(sensor_id);
-                let current = chart.map.getKey(sensor_id);
-                current.hide();
-                marker.gdvStats.active = false;
+                //x.target.setIcon(makeIcon("", false));
+                makeInactive(sensor_id, false);
+
+                //marker.gdvStats.active = false;
             } else {
-                x.target.setIcon(makeIcon(sensor_id, true));
+                //x.target.setIcon(makeIcon(sensor_id, true));
+                console.log(sensor_id);
                 makeActive(sensor_id);
-                let current = chart.map.getKey(sensor_id);
-                if (current.resolution !== accuracy) {
-                    let basic = chart.map.getKey(activeSensors[0]);
-                    let min = basic.xAxis.minZoomed;
-                    let max = basic.xAxis.maxZoomed;
-                    console.log("series needs update!");
-                    let data = await getData(min, max, sensor_id);
-                    current.data = data.data
-                }
-                current.show();
-                marker.gdvStats.active = true;
             }
         })
     });
