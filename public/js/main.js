@@ -272,6 +272,9 @@ am4core.ready(function () {
     var colorSet = new am4core.ColorSet();
     colorSet.saturation = 0.5;
 
+    //todo load events dynamically
+    //todo one day events will not be displayed
+
     // timelineChart.dataSource.url = "http://localhost:3000/api/events";
     // timelineChart.dataSource.events.on("done", (ev) => {
     //     timelineChart.data = ev.data[0];
@@ -549,6 +552,8 @@ am4core.ready(function () {
 
     var timelineEventSeries = timelineChart.series.push(new am4plugins_timeline.CurveColumnSeries());
     // timelineEventSeries.columns.template.height = am4core.percent(20);
+
+    //todo fix encoding (äöüß)
     timelineEventSeries.columns.template.tooltipText = `{name}: 
     [bold]{openDateX}[/] - 
     [bold]{dateX}[/]`;
@@ -590,6 +595,7 @@ am4core.ready(function () {
     timelineDateAxis.renderer.tooltipLocation2 = 0;
     categoryAxis.cursorTooltipEnabled = false;
     timelineDateAxis.cursorTooltipEnabled = false;
+    timelineChart.zoomOutButton.disabled = true;
 
 }); // end am4core.ready()
 

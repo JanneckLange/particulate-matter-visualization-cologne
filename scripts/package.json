@@ -7,7 +7,8 @@
     "calcAverage": "node calcAverage.js",
     "fillCollection": "node fillCollection.js",
     "loadEvents": "node loadEvents.js",
-    "dateConverter": "node dateConverter.js"
+    "dateConverter": "node dateConverter.js",
+    "updateTimestamp": "node updateAllTimestamps.js"
   },
   "author": "",
   "license": "ISC",
