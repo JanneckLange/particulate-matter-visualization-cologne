@@ -225,8 +225,9 @@ P2: {valueY.formatNumber('#.00')}`;
     async function updateData() {
         // regarding weather ---------------------------
         let weather = chart.map.getKey("weather");
-        let weatherMin = weather.xAxis.minZoomed;
-        let weatherMax = weather.xAxis.maxZoomed;
+        let weatherMin = dirtDateAxis.minZoomed;
+        let weatherMax = dirtDateAxis.maxZoomed;
+
         let deltaWeather = weatherMax - weatherMin;
         let newWeatherAccuracy;
         if (deltaWeather < 31 * 24 * 3600000) {
@@ -246,9 +247,8 @@ P2: {valueY.formatNumber('#.00')}`;
 
         // regarding dirt ---------------------------
         if (activeSensors.length > 0) {
-            let basic = chart.map.getKey(activeSensors[0]);
-            let min = basic.xAxis.minZoomed;
-            let max = basic.xAxis.maxZoomed;
+            let min = dirtDateAxis.minZoomed;
+            let max = dirtDateAxis.maxZoomed;
 
             let delta = max - min;
             let newAccuracy;
