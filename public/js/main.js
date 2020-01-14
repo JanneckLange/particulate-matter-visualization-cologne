@@ -517,8 +517,6 @@ Niederschlag: noll`;
 
         eventSeries.strokeOpacity = 0;
 
-        eventSeries.on
-
         let bullet = eventSeries.bullets.push(new am4charts.CircleBullet());
 
         let circle = bullet.createChild(am4core.Circle);
@@ -575,6 +573,10 @@ Niederschlag: noll`;
         outerCircle.events.on("out", function(event){
             let circle = event.target.parent.children.getIndex(1);
             circle.isHover = false;
+        });
+
+        bullet.events.on("hit", (event) => {
+            console.log(event.target);
         });
 
         let cursor = new am4plugins_timeline.CurveCursor();
@@ -789,17 +791,7 @@ Niederschlag: noll`;
 // ---------------------------------------------------------------------------------------------------------------------
 });
 
-    // eventSeries.columns.template.events.on("hit", function(ev) {
-    //     let sensors = ev.target.dataItem._dataContext.sensors; // int[]
-    //     let date_start = ev.target.dataItem._dataContext.date_start; // double - timestamp
-    //     let date_end = ev.target.dataItem._dataContext.date_end; // double - timestamp
-    //     let lat = ev.target.dataItem._dataContext.lat; // double (when you want to set focus on map)
-    //     let long = ev.target.dataItem._dataContext.long; // double (when you want to set focus on map)
-    //
-    //     //todo select sensors
-    //     //todo select timespan
-    //     console.log(ev.target.dataItem._dataContext);
-    // });
+
 
 
 
