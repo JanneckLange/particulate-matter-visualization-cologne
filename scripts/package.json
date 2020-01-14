@@ -1,14 +1,14 @@
 {
   "name": "mongo",
   "version": "1.0.0",
-  "main": "findData.js",
+  "main": "javascript/findData.js",
   "scripts": {
-    "find": "node findData.js",
-    "calcAverage": "node calcAverage.js",
-    "fillCollection": "node fillCollection.js",
-    "loadEvents": "node loadEvents.js",
-    "dateConverter": "node dateConverter.js",
-    "updateTimestamp": "node updateAllTimestamps.js"
+    "find": "node javascript/findData.js",
+    "calcAverage": "node javascript/calcAverage.js",
+    "fillCollection": "node javascript/fillCollection.js",
+    "loadEvents": "node javascript/loadEvents.js",
+    "dateConverter": "node javascript/dateConverter.js",
+    "updateTimestamp": "node javascript/updateAllTimestamps.js"
   },
   "author": "",
   "license": "ISC",
