@@ -261,3 +261,328 @@ Niederschlag: noll`;
 // end am4core.ready()
 
 
+am4core.ready(function () {
+    console.log('init timeline')
+    var timelineChart = am4core.create("timeLineDiv", am4plugins_timeline.CurveChart);
+    timelineChart.curveContainer.padding(50, 20, 50, 20);
+    timelineChart.yAxisRadius = am4core.percent(25);
+    timelineChart.yAxisInnerRadius = am4core.percent(25);
+    timelineChart.maskBullets = false;
+
+    var colorSet = new am4core.ColorSet();
+    colorSet.saturation = 0.5;
+
+    // timelineChart.dataSource.url = "http://localhost:3000/api/events";
+    // timelineChart.dataSource.events.on("done", (ev) => {
+    //     timelineChart.data = ev.data[0];
+    // });
+    timelineChart.data = [
+        {
+            "name": "Straßenfest Neusser Straße",
+            "date_start": 1525392000000,
+            "date_end": 1525647600000,
+            "lat": 50.96236449670464,
+            "long": 6.954247264208018,
+            "sensors": [
+                35245
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Tag des guten Lebens",
+            "date_start": 1530421200000,
+            "date_end": 1530473400000,
+            "lat": 50.94988476658721,
+            "long": 6.956903564961454,
+            "sensors": [
+                5129,
+                24877,
+                28387,
+                32834
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Silvesterfeuerwerk 2018",
+            "date_start": 1546218000000,
+            "date_end": 1546300800000,
+            "lat": 50.938014156165195,
+            "long": 6.957558024318678,
+            "sensors": [
+                3677
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Karneval - Zülpicher Viertel",
+            "date_start": 1551315600000,
+            "date_end": 1551744000000,
+            "lat": 50.92965018028039,
+            "long": 6.938020814412779,
+            "sensors": [
+                12812
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Karneval - Altstadt",
+            "date_start": 1551315600000,
+            "date_end": 1551744000000,
+            "lat": 50.93708251207144,
+            "long": 6.960505602823413,
+            "sensors": [
+                3677
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Karneval - Geisterzug",
+            "date_start": 1551546000000,
+            "date_end": 1551564000000,
+            "lat": 50.932672745344505,
+            "long": 6.921541321346401,
+            "sensors": [
+                1164,
+                3403,
+                11642,
+                18459
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Veranstaltung \"Straßenland\"",
+            "date_start": 1561161600000,
+            "date_end": 1561330800000,
+            "lat": 50.94466639808929,
+            "long": 6.953282581591832,
+            "sensors": [
+                5129,
+                24877,
+                28387
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Straßenfest am Eigelstein",
+            "date_start": 1561680000000,
+            "date_end": 1561935600000,
+            "lat": 50.94772854175718,
+            "long": 6.956635344509361,
+            "sensors": [
+                5129,
+                24877,
+                28387,
+                32834
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Straßenfest Deutzer Freiheit",
+            "date_start": 1564704000000,
+            "date_end": 1564959600000,
+            "lat": 50.936770134685865,
+            "long": 6.973619092877602,
+            "sensors": [
+                28499
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Straßenfest Venloer Straße",
+            "date_start": 1565308800000,
+            "date_end": 1565564400000,
+            "lat": 50.94885736225773,
+            "long": 6.919159520987985,
+            "sensors": [
+                3601
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Straßenfest Agnesviertel",
+            "date_start": 1565913600000,
+            "date_end": 1566169200000,
+            "lat": 50.95293980866827,
+            "long": 6.9571825156304214,
+            "sensors": [
+                5898,
+                32834
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "gamescom city festival",
+            "date_start": 1566432000000,
+            "date_end": 1566774000000,
+            "lat": 50.93900106816272,
+            "long": 6.939592588621571,
+            "sensors": [
+                13455
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Straßenfest Carrée Sülz-Klettenberg",
+            "date_start": 1567123200000,
+            "date_end": 1567378800000,
+            "lat": 50.91684774920366,
+            "long": 6.9255968229677505,
+            "sensors": [
+                2502
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Dä längste Desch vun Kölle",
+            "date_start": 1568937600000,
+            "date_end": 1569193200000,
+            "lat": 50.92411146229489,
+            "long": 6.958638001506143,
+            "sensors": [
+                11279
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Rund an der Eigelsteintorburg",
+            "date_start": 1569729600000,
+            "date_end": 1569776400000,
+            "lat": 50.94950625141212,
+            "long": 6.956839192065867,
+            "sensors": [
+                5129,
+                24877,
+                28387,
+                32834
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Köln Marathon",
+            "date_start": 1570752000000,
+            "date_end": 1571007600000,
+            "lat": 50.94168517528119,
+            "long": 6.955372376235818,
+            "sensors": [
+                5129
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Köln Marathon",
+            "date_start": 1570752000000,
+            "date_end": 1571007600000,
+            "lat": 50.939812518374175,
+            "long": 6.974391568526428,
+            "sensors": [
+                28499
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Halloween",
+            "date_start": 1572483600000,
+            "date_end": 1572566400000,
+            "lat": 50.93015733580246,
+            "long": 6.938879121763812,
+            "sensors": [
+                12812
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Karnevalseröffnung - Altstadt",
+            "date_start": 1573434000000,
+            "date_end": 1573516800000,
+            "lat": 50.92981923270955,
+            "long": 6.938439239392281,
+            "sensors": [
+                12812
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Karnevalseröffnung - Altstadt",
+            "date_start": 1573434000000,
+            "date_end": 1573516800000,
+            "lat": 50.936338059327326,
+            "long": 6.960473987554355,
+            "sensors": [
+                3677,
+                19917
+            ],
+            "sensorMaxDistance": 0.5
+        },
+        {
+            "name": "Verkaufsoffener Sonntag in der Innenstadt",
+            "date_start": 1576411200000,
+            "date_end": 1576429200000,
+            "lat": 50.93649969224725,
+            "long": 6.955229867558557,
+            "sensors": [
+                3677
+            ],
+            "sensorMaxDistance": 0.5
+        }
+    ];
+
+    timelineChart.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm";
+    timelineChart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm";
+    timelineChart.fontSize = 11;
+
+    var categoryAxis = timelineChart.yAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "sensorMaxDistance";
+
+    var timelineDateAxis = timelineChart.xAxes.push(new am4charts.DateAxis());
+    timelineDateAxis.renderer.minGridDistance = 50;
+    // timelineDateAxis.baseInterval = {count: 1, timeUnit: "day"};
+    timelineDateAxis.renderer.tooltipLocation = 5;
+    // timelineDateAxis.startLocation = -0.5;
+    timelineDateAxis.renderer.line.strokeDasharray = "1,4";
+    timelineDateAxis.renderer.line.strokeOpacity = 0.6;
+
+
+
+    timelineDateAxis.renderer.points = [
+        {x: 0, y: -400},
+        {x: 0, y: 400}];
+
+    var timelineEventSeries = timelineChart.series.push(new am4plugins_timeline.CurveColumnSeries());
+    // timelineEventSeries.columns.template.height = am4core.percent(20);
+    timelineEventSeries.columns.template.tooltipText = `{name}: 
+    [bold]{openDateX}[/] - 
+    [bold]{dateX}[/]`;
+    timelineEventSeries.tooltip.pointerOrientation = "vertical";
+    timelineEventSeries.tooltip.maxWidth = 50;
+
+    timelineEventSeries.dataFields.openDateX = "date_start";
+    timelineEventSeries.dataFields.dateX = "date_end";
+    timelineEventSeries.dataFields.categoryY = "sensorMaxDistance";
+    timelineEventSeries.columns.template.strokeOpacity = 0;
+
+    timelineEventSeries.columns.template.events.on("hit", function(ev) {
+        console.log(ev.target.dataItem._dataContext);
+    });
+
+    timelineChart.scrollbarX = new am4core.Scrollbar();
+    timelineChart.scrollbarX.parent = timelineChart.curveContainer;
+    timelineChart.scrollbarX.height = 300;
+    timelineChart.scrollbarX.orientation = "vertical";
+    timelineChart.scrollbarX.x = 70;
+    timelineChart.scrollbarX.y = -140;
+
+    var cursor = new am4plugins_timeline.CurveCursor();
+    timelineChart.cursor = cursor;
+    cursor.xAxis = timelineDateAxis;
+    cursor.yAxis = categoryAxis;
+    cursor.lineY.disabled = true;
+    cursor.lineX.strokeDasharray = "1,4";
+    cursor.lineX.strokeOpacity = 1;
+
+    timelineDateAxis.renderer.tooltipLocation2 = 0;
+    categoryAxis.cursorTooltipEnabled = false;
+    timelineDateAxis.cursorTooltipEnabled = false;
+
+}, "chartdiv", am4charts.XYChart); // end am4core.ready()
+
+
