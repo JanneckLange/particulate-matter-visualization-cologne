@@ -696,6 +696,7 @@ am4core.ready(function () {
     chart.yAxisRadius = am4core.percent(45);
     chart.yAxisInnerRadius = am4core.percent(-45);
     chart.maskBullets = false;
+    chart.language.locale = am4lang_de_DE;
 
     var colorSet = new am4core.ColorSet();
     colorSet.saturation = 0.5;
@@ -1054,6 +1055,7 @@ am4core.ready(function () {
             "sensorMaxDistance": 0.5,
             "category": ""
         }];
+
     eventSeries.strokeOpacity = 0;
 
     var bullet = eventSeries.bullets.push(new am4charts.CircleBullet());
@@ -1088,16 +1090,8 @@ am4core.ready(function () {
     textLabel.interactionsEnabled = false;
 
     chart.scrollbarX = new am4core.Scrollbar();
-    chart.scrollbarX.align = "center"
+    chart.scrollbarX.align = "center";
     chart.scrollbarX.width = am4core.percent(85);
-
-    var cursor = new am4plugins_timeline.CurveCursor();
-    chart.cursor = cursor;
-    cursor.xAxis = dateAxis;
-    cursor.yAxis = categoryAxis;
-    cursor.lineY.disabled = true;
-    cursor.lineX.strokeDasharray = "1,4";
-    cursor.lineX.strokeOpacity = 1;
 
     var outerCircle = bullet.createChild(am4core.Circle);
     outerCircle.radius = 30;
@@ -1121,6 +1115,14 @@ am4core.ready(function () {
         var circle = event.target.parent.children.getIndex(1);
         circle.isHover = false;
     });
+
+    var cursor = new am4plugins_timeline.CurveCursor();
+    chart.cursor = cursor;
+    cursor.xAxis = dateAxis;
+    cursor.yAxis = categoryAxis;
+    cursor.lineY.disabled = true;
+    cursor.lineX.strokeDasharray = "1,4";
+    cursor.lineX.strokeOpacity = 1;
 
     dateAxis.renderer.tooltipLocation2 = 0;
     categoryAxis.cursorTooltipEnabled = false;
