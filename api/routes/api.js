@@ -47,7 +47,7 @@ router.get('/', function (req, res, next) {
         res.send('sensor not available').status(400);
     } else if (!min && !max) {//send full sensor data when no min/max is given
         sendEverything(req, res, {sensor_id: parseInt(sensor)})
-    } else if (min > max) {
+    } else if (min >= max) {
         res.send('min must be lower than max').status(400);
     } else if (max - min < accurateDataTime) {//send hourly data when time range is smaller than accurateDataTime
         console.log('send accurate Data');

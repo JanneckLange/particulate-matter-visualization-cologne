@@ -151,6 +151,45 @@ P2: {valueY.formatNumber('#.00')}`;
 
         upperRange.axisFill.fillOpacity = middleRange.axisFill.fillOpacity = lowerRange.axisFill.fillOpacity = 0.1;
         upperRange.grid.strokeOpacity = middleRange.grid.strokeOpacity = lowerRange.grid.strokeOpacity = 0;
+
+
+        // -------------------------------------------------------------------------------------------------------------
+
+        //Zoom in and Zoom out Button with zoom errors
+
+        var buttonContainer = chart.plotContainer.createChild(am4core.Container);
+        buttonContainer.shouldClone = false;
+        buttonContainer.align = "right";
+        buttonContainer.valign = "top";
+        buttonContainer.zIndex = Number.MAX_SAFE_INTEGER;
+        buttonContainer.marginTop = 5;
+        buttonContainer.marginRight = 5;
+        buttonContainer.layout = "horizontal";
+
+        // const zoomInButton = buttonContainer.createChild(am4core.Button);
+        // zoomInButton.label.text = "+";
+        // zoomInButton.events.on("hit", function (ev) {
+        //     const delta = (dirtDateAxis.maxZoomed - dirtDateAxis.minZoomed) * 0.2;
+        //     let startDate = new Date(dirtDateAxis.minZoomed + delta);
+        //     let endDate = new Date(dirtDateAxis.maxZoomed - delta);
+        //     dirtDateAxis.zoomToDates(startDate, endDate);
+        //     // setTimeout(()=>weatherDateAxis.zoomToDates(startDate, endDate),200)
+        //     // weatherDateAxis.zoomToDates(startDate, endDate);
+        // });
+
+        const zoomOutButton = buttonContainer.createChild(am4core.Button);
+        zoomOutButton.label.text = "-";
+        zoomOutButton.events.on("hit", function (ev) {
+            const delta = (dirtDateAxis.maxZoomed - dirtDateAxis.minZoomed) * 0.2;
+            let startDate = new Date(dirtDateAxis.minZoomed - delta);
+            let endDate = new Date(dirtDateAxis.maxZoomed + delta);
+            dirtDateAxis.zoomToDates(startDate, endDate);
+            // weatherDateAxis.zoomToDates(startDate, endDate);
+
+        });
+
+        // -------------------------------------------------------------------------------------------------------------
+
     }
 
     function setDateAxisProperties() {
@@ -253,9 +292,9 @@ P2: {valueY.formatNumber('#.00')}`;
                 let current = activeSensors.shift();
                 chart.map.getKey(current).hide();
                 // change marker color
-                for(let i in myMap._layers) {
+                for (let i in myMap._layers) {
                     let currentMarker = myMap._layers[i];
-                    if(currentMarker.options.title === current) {
+                    if (currentMarker.options.title === current) {
                         currentMarker.setIcon(makeIcon("", false));
                     }
                 }
@@ -655,7 +694,7 @@ am4core.ready(function () {
     timelineEventSeries.dataFields.categoryY = "sensorMaxDistance";
     timelineEventSeries.columns.template.strokeOpacity = 0;
 
-    timelineEventSeries.columns.template.events.on("hit", function(ev) {
+    timelineEventSeries.columns.template.events.on("hit", function (ev) {
         let sensors = ev.target.dataItem._dataContext.sensors; // int[]
         let date_start = ev.target.dataItem._dataContext.date_start; // double - timestamp
         let date_end = ev.target.dataItem._dataContext.date_end; // double - timestamp
