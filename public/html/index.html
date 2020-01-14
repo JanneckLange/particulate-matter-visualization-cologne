@@ -1,28 +1,29 @@
-<html  lang="de">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-<script src="../lib/core.js"></script>
-<script src="../lib/charts.js"></script>
-<script src="../lib/timeline.js"></script>
-    <script src="https://www.amcharts.com/lib/4/plugins/bullets.js"></script>
-    <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
-    <script src="https://www.amcharts.com/lib/4/lang/de_DE.js"></script>
+    <script src="../lib/core.js"></script>
+    <script src="../lib/charts.js"></script>
+    <script src="../lib/timeline.js"></script>
+    <script src="../lib/bullets.js"></script>
+    <script src="../lib/animated.js"></script>
+    <script src="../lib/de_DE.js"></script>
 
-<link rel="stylesheet" href="../lib/leaflet1.6.0.css"
-      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-      crossorigin=""/>
-<script src="../lib/leaflet1.6.0.js"
-        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-        crossorigin=""></script>
+    <link rel="stylesheet" href="../lib/leaflet1.6.0.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+    <script src="../lib/leaflet1.6.0.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
 
     <script charset="UTF-8" src="../js/main.js"></script>
 
     <style>
-        body{
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             overflow: hidden;
             margin: 0;
         }
+
         #chartdiv {
             position: absolute;
             z-index: 2;
@@ -30,8 +31,8 @@
             /*width: calc(100% - 201px);*/
             height: 50%;
             bottom: 0;
-            background: rgb(0,0,0);
-            background: linear-gradient(0deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);
+            background: rgb(0, 0, 0);
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 90%, rgba(255, 255, 255, 0) 100%);
         }
 
         #map {
@@ -47,16 +48,16 @@
             right: 0;
             width: 30%;
             height: 100%;
-            background: rgba(255, 255, 255,0.7);
-            box-shadow: -10px 0px 15px rgba(255, 255, 255,0.7);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: -10px 0px 15px rgba(255, 255, 255, 0.7);
         }
     </style>
     <title>GDV</title>
 </head>
 <body>
-    <div id="chartdiv"></div>
-    <div id="map"></div>
-    <div id="timeLineDiv"></div>
+<div id="chartdiv"></div>
+<div id="map"></div>
+<div id="timeLineDiv"></div>
 </body>
 </html>
 
