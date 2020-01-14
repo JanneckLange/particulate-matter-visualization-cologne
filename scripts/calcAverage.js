@@ -27,13 +27,13 @@ MongoClient.connect(url, async function (err, db) {
                 $project: {
                     date: {
                         $dateToString: {
+                            // format: "%Y-%m-%dT%H:00:00",
                             format: "%Y-%m-%d",
                             date: {$toDate: {$toLong: "$timestamp"}}
                         }
                     },
-                    P1: '$P1',
                     P2: '$P2',
-                    id: '$sensor_id',
+                    sensor_id: '$sensor_id',
                     timestamp: "$timestamp",
                     lat: '$lat',
                     lon: '$lon'
@@ -43,9 +43,8 @@ MongoClient.connect(url, async function (err, db) {
                 $group: {
                     _id: '$date',
                     timestamp: {$first: '$timestamp'},
-                    avgP1: {$avg: '$P1'},
                     avgP2: {$avg: '$P2'},
-                    sensor_id: {$last: '$id'},
+                    sensor_id: {$last: '$sensor_id'},
                     lat: {$last: '$lat'},
                     lon: {$last: '$lon'}
                 }
@@ -60,11 +59,11 @@ MongoClient.connect(url, async function (err, db) {
                 let average = {
                     sensor_id: data.sensor_id,
                     timestamp: new Date(data._id).getTime(),
-                    P1: data.avgP1,
                     P2: data.avgP2,
                     lat: data.lat,
                     long: data.lon,
-                    dataType: 'average'
+                    // dataType: 'hourlyAVG'
+                    dataType: 'dailyAVG'
                 };
                 dbo.collection("dailyAVG").insertOne(average, function (err, res) {
                     if (err) throw err;

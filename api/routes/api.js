@@ -118,7 +118,8 @@ router.get('/weather', function (req, res, next) {
     let max = req.query.max;
 
     if (!min || !max) {
-        res.send('min/max missing').status(400);
+        // getAccurateWeatherData(req, res, next);
+        getAverageWeatherData(req, res, next)
     } else if (max - min < maxTimeZone) {
         getAccurateWeatherData(req, res, next);
     } else {
@@ -127,8 +128,8 @@ router.get('/weather', function (req, res, next) {
 });
 
 function getAverageWeatherData(req, res, next) {
-    let min = parseInt(req.query.min);
-    let max = parseInt(req.query.max);
+    let min = parseInt(req.query.min ? req.query.min : '0');
+    let max = parseInt(req.query.max ? req.query.max : '1678933322000');
 
     dbo.collection('weatherAir_converted').aggregate([
         {$match: {date: {$gte: min, $lt: max}}},
@@ -179,7 +180,7 @@ function getAverageWeatherData(req, res, next) {
                 $group: {
                     _id: '$date',
                     date: {$first: '$timestamp'},
-                    Niederschlag: {$avg: '$Niederschlag'},
+                    Niederschlag: {$sum: '$Niederschlag'},
                     Niederschlagsdauer: {$sum: '$Niederschlagsdauer'}
                 }
             },
@@ -250,12 +251,14 @@ function getAverageWeatherData(req, res, next) {
 }
 
 function getAccurateWeatherData(req, res, next) {
-    let min = req.query.min;
-    let max = req.query.max;
+    // let min = req.query.min;
+    // let max = req.query.max;
+    let min = parseInt(req.query.min ? req.query.min : '0');
+    let max = parseInt(req.query.max ? req.query.max : '1678933322000');
     let query = {
         date: {
-            $gte: parseInt(min),//min Date
-            $lt: parseInt(max)//max Date
+            $gte: min,//min Date
+            $lt: max//max Date
         }
     };
     let projection = {
@@ -284,30 +287,29 @@ function combineWeatherData(data_air, data_nie, data_sol, data_win) {
     let weather = [];
 
     data_air.forEach(airDat => {
-        let nie = data_nie.find(x => x._id === airDat._id);
-        let sol = data_sol.find(x => x._id === airDat._id);
-        let win = data_win.find(x => x._id === airDat._id);
-
+        let nie = data_nie.find(x => x.date === airDat.date);
+        let sol = data_sol.find(x => x.date === airDat.date);
+        let win = data_win.find(x => x.date === airDat.date);
         weather.push({
-            dateString: (airDat._id) ? airDat._id : '',
+            dateString: (airDat.dateString) ? airDat.dateString : '',
             date: airDat.date,
 
-            Luftdruck: airDat.Luftdruck,
+            // Luftdruck: airDat.Luftdruck,
             Lufttemperatur1: airDat.Lufttemperatur1,
             // Lufttemperatur2: airDat.Lufttemperatur2,
-            Luftfeuchte: airDat.Luftfeuchte,
+            // Luftfeuchte: airDat.Luftfeuchte,
             // Taupunkttemperatur: airDat.Taupunkttemperatur,
 
-            Niederschlagsdauer: (nie) ? nie.Niederschlagsdauer : null,
-            Niederschlag: (nie) ? nie.Niederschlag : null,
+            Niederschlagsdauer: (nie) ? nie.Niederschlagsdauer : 0,
+            Niederschlag: (nie) ? nie.Niederschlag : 0,
 
-            Globalstrahlung: (sol) ? sol.Globalstrahlung : null,
-            Solarstrahlung: (sol) ? sol.Solarstrahlung : null,
-            Direktstrahlung: (sol) ? sol.Direktstrahlung : null,
-            Sonnenscheindauer: (sol) ? sol.Sonnenscheindauer : null,
+            // Globalstrahlung: (sol) ? sol.Globalstrahlung : null,
+            // Solarstrahlung: (sol) ? sol.Solarstrahlung : null,
+            // Direktstrahlung: (sol) ? sol.Direktstrahlung : null,
+            // Sonnenscheindauer: (sol) ? sol.Sonnenscheindauer : null,
 
-            Windstaerke: (win) ? win.Windstaerke : null,
-            Windrichtung: (win) ? win.Windrichtung : null
+            // Windstaerke: (win) ? win.Windstaerke : null,
+            // Windrichtung: (win) ? win.Windrichtung : null
         });
     });
     return weather;
@@ -375,14 +377,14 @@ function sendAccurateDataTime(req, res) {
  */
 function sendAverageDataTime(req, res, accuracy) {
     let sensor = req.query.sensor;
-    let min = req.query.min - timeOffset;
-    let max = req.query.max + timeOffset;
+    let min = parseInt(req.query.min) - timeOffset;
+    let max = parseInt(req.query.max) + timeOffset;
 
 
     let query = {
         timestamp: {
-            $gte: parseInt(min),//min Date
-            $lt: parseInt(max)//max Date
+            $gte: min,//min Date
+            $lt: max//max Date
         },
         sensor_id: parseInt(sensor)
     };
