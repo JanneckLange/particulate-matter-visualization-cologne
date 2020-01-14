@@ -66,7 +66,7 @@ am4core.ready(async function () {
         dirtDateAxis.groupData = true;
 
         weatherDateAxis.groupData = true;
-        setDataAxisProperties();
+        setDateAxisProperties();
         // dateAxis.baseInterval = {count: 1, timeUnit: "day"};
         // -------------------------------------------------------------------------------------------------------------
 
@@ -117,7 +117,7 @@ Niederschlag: noll`;
             series.dataSource.events.on("done", (ev) => {
                 series.data = ev.data[0].data;
                 series.resolution = ev.data[0].resolution;
-                setDataAxisProperties();
+                setDateAxisProperties();
             });
         }
 
@@ -153,15 +153,15 @@ Niederschlag: noll`;
         upperRange.grid.strokeOpacity = middleRange.grid.strokeOpacity = lowerRange.grid.strokeOpacity = 0;
     }
 
-    function setDataAxisProperties() {
-        dateAxis.dateFormats.setKey("month", "MMMM YYYY");
-        dateAxis.dateFormats.setKey("day", "dd.MM.YYYY");
-        dateAxis.dateFormats.setKey("hour", "HH:mm");
-        dateAxis.dateFormats.setKey("minute", "HH:mm");
-        dateAxis.periodChangeDateFormats.setKey("month", "MMMM [bold]yyyy[/]");
-        dateAxis.periodChangeDateFormats.setKey("day", "dd. [bold]MMMM[/] YYYY");
-        dateAxis.periodChangeDateFormats.setKey("hour", "[bold]dd. MMM[/] HH:mm");
-        dateAxis.periodChangeDateFormats.setKey("minute", "[bold]dd. MMM[/] HH:mm");
+    function setDateAxisProperties() {
+        dirtDateAxis.dateFormats.setKey("month", "MMMM YYYY");
+        dirtDateAxis.dateFormats.setKey("day", "dd.MM.YYYY");
+        dirtDateAxis.dateFormats.setKey("hour", "HH:mm");
+        dirtDateAxis.dateFormats.setKey("minute", "HH:mm");
+        dirtDateAxis.periodChangeDateFormats.setKey("month", "MMMM [bold]yyyy[/]");
+        dirtDateAxis.periodChangeDateFormats.setKey("day", "dd. [bold]MMMM[/] YYYY");
+        dirtDateAxis.periodChangeDateFormats.setKey("hour", "[bold]dd. MMM[/] HH:mm");
+        dirtDateAxis.periodChangeDateFormats.setKey("minute", "[bold]dd. MMM[/] HH:mm");
     }
 
     async function getData(min, max, sensor_id) {
@@ -636,8 +636,6 @@ am4core.ready(function () {
     timelineDateAxis.renderer.line.strokeDasharray = "1,4";
     timelineDateAxis.renderer.line.strokeOpacity = 0.6;
 
-
-
     timelineDateAxis.renderer.points = [
         {x: 0, y: -400},
         {x: 0, y: 400}];
@@ -690,5 +688,3 @@ am4core.ready(function () {
     timelineChart.zoomOutButton.disabled = true;
 
 }); // end am4core.ready()
-
-
