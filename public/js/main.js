@@ -150,10 +150,10 @@ Niederschlag: noll`;
         //am4core.useTheme(am4themes_animated);
         timeLineChart = am4core.create("timeLineDiv", am4plugins_timeline.SerpentineChart);
         timeLineChart.curveContainer.padding(20, 20, 20, 20);
-        timeLineChart.levelCount = 4;
+        timeLineChart.levelCount = 5;
         timeLineChart.orientation = "vertical";
-        timeLineChart.yAxisRadius = am4core.percent(45);
-        timeLineChart.yAxisInnerRadius = am4core.percent(-45);
+        timeLineChart.yAxisRadius = am4core.percent(15);
+        timeLineChart.yAxisInnerRadius = am4core.percent(-15);
         timeLineChart.maskBullets = false;
         timeLineChart.language.locale = am4lang_de_DE;
 
@@ -162,7 +162,7 @@ Niederschlag: noll`;
 
         timeLineChart.dateFormatter.dateFormat = "yyyy-MM-dd";
         timeLineChart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
-        timeLineChart.fontSize = 11;
+        timeLineChart.fontSize = 13;
 
         let categoryAxis = timeLineChart.yAxes.push(new am4charts.CategoryAxis());
         categoryAxis.dataFields.category = "category";
@@ -177,8 +177,8 @@ Niederschlag: noll`;
         dateAxis.baseInterval = { count: 1, timeUnit: "day" };
         dateAxis.renderer.tooltipLocation = 0;
         dateAxis.startLocation = -0.5;
-        dateAxis.renderer.line.strokeDasharray = "1,4";
-        dateAxis.renderer.line.strokeOpacity = 0.6;
+        dateAxis.renderer.line.strokeDasharray = "2,4";
+        dateAxis.renderer.line.strokeOpacity = 0.8;
         dateAxis.tooltip.background.fillOpacity = 0.2;
         dateAxis.tooltip.background.cornerRadius = 5;
         dateAxis.tooltip.label.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
@@ -538,7 +538,6 @@ Niederschlag: noll`;
         let circleHoverState = circle.states.create("hover");
         circleHoverState.properties.scale = 1.3;
 
-
         series.heatRules.push({ target: circle, min: 20, max: 50, property: "radius" });
         circle.adapter.add("fill", function(fill, target) {
             if (target.dataItem) {
@@ -586,7 +585,17 @@ Niederschlag: noll`;
             circle.isHover = false;
         });
 
+        let activeBullet;
+        function circleActive(bullet) {
+            if(activeBullet) {
+                activeBullet.circle.radius = 15;
+            }
+            bullet.circle.radius = 30;
+            activeBullet = bullet;
+        }
+
         bullet.events.on("hit", (event) => {
+            circleActive(event.target);
             makeInactive("", true);
             let sensors = event.target.dataItem.dataContext.sensors;
             for(let i=0; i < sensors.length; i++) {
