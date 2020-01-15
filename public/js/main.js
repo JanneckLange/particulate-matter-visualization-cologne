@@ -4,9 +4,6 @@ am4core.ready(async function () {
     am4core.options.onlyShowOnViewport = true;
     const path = "http://f16d5eda.ngrok.io/api";
 
-
-    let mainContainer;
-    let timeLineContainer;
     let chart;
     let dirtDateAxis;
     let weatherDateAxis;
@@ -93,8 +90,7 @@ am4core.ready(async function () {
             series.dataFields.dateX = "timestamp";
             series.tooltipText = "{dateX.formatDate('yyyy-MM-dd')}: P2: {valueY.formatNumber('#.00')}";
             series.tooltipText = `[bold]{dateX.formatDate('dd.MM.yyyy')}[/]
-P2: {valueY.formatNumber('#.00')}
-Niederschlag: noll`;
+P2: {valueY.formatNumber('#.00')}`;
             series.strokeWidth = 2;
             series.opacity = 0.7;
             series.yAxis = dirtAxis;
