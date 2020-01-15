@@ -204,18 +204,6 @@ P2: {valueY.formatNumber('#.00')}`;
         eventSeries.dataFields.categoryY = "category";
         eventSeries.data = [
             {
-                "name": "Straßenfest Neusser Straße",
-                "date_start": 1525392000000,
-                "date_end": 1525647600000,
-                "lat": 50.96236449670464,
-                "long": 6.954247264208018,
-                "sensors": [
-                    35245
-                ],
-                "sensorMaxDistance": 0.5,
-                "category": ""
-            },
-            {
                 "name": "Tag des guten Lebens",
                 "date_start": 1530421200000,
                 "date_end": 1530473400000,
@@ -238,18 +226,6 @@ P2: {valueY.formatNumber('#.00')}`;
                 "long": 6.957558024318678,
                 "sensors": [
                     3677
-                ],
-                "sensorMaxDistance": 0.5,
-                "category": ""
-            },
-            {
-                "name": "Straßenfest Neusser Straße",
-                "date_start": 1525392000000,
-                "date_end": 1525647600000,
-                "lat": 50.96236449670464,
-                "long": 6.954247264208018,
-                "sensors": [
-                    35245
                 ],
                 "sensorMaxDistance": 0.5,
                 "category": ""
