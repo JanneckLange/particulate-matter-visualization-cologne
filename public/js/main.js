@@ -146,7 +146,7 @@ P2: {valueY.formatNumber('#.00')}`;
         //am4core.useTheme(am4themes_animated);
         timeLineChart = am4core.create("timeLineDiv", am4plugins_timeline.SerpentineChart);
         timeLineChart.curveContainer.padding(20, 20, 20, 20);
-        timeLineChart.levelCount = 5;
+        timeLineChart.levelCount = 10;
         timeLineChart.orientation = "vertical";
         timeLineChart.yAxisRadius = am4core.percent(15);
         timeLineChart.yAxisInnerRadius = am4core.percent(-15);
