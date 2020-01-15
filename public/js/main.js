@@ -581,51 +581,58 @@ P2: {valueY.formatNumber('#.00')}`;
             circle.isHover = false;
         });
 
-        let activeBullet;
+        let activeEvent;
         function circleActive(bullet) {
-            if(activeBullet) {
-                activeBullet.circle.radius = 15;
-            }
             bullet.circle.radius = 30;
-            activeBullet = bullet;
         }
 
         bullet.events.on("hit", (event) => {
-            circleActive(event.target);
             makeInactive("", true);
-            let sensors = event.target.dataItem.dataContext.sensors;
-            for(let i=0; i < sensors.length; i++) {
-                makeActive(sensors[i]);
-            }
-            let min_date = event.target.dataItem.dataContext.date_start;
-            let max_date = event.target.dataItem.dataContext.date_end;
-            let middle = (min_date + max_date) / 2;
-            console.log(min_date + ", " + max_date);
-            //dirtDateAxis.zoomToDates(min_date, max_date);
-            //weatherDateAxis.zoomToDates(min_date, max_date);
             dirtDateAxis.axisRanges.clear();
+            console.log(activeEvent);
+            console.log(event.target);
+            if (activeEvent) {
+                activeEvent.circle.radius = 15;
+            }
+            if (activeEvent !== event.target) {
+                activeEvent = event.target;
+                let sensors = event.target.dataItem.dataContext.sensors;
+                for(let i=0; i < sensors.length; i++) {
+                    makeActive(sensors[i]);
+                }
+                let min_date = event.target.dataItem.dataContext.date_start;
+                let max_date = event.target.dataItem.dataContext.date_end;
+                let middle = (min_date + max_date) / 2;
+                console.log(min_date + ", " + max_date);
+                //dirtDateAxis.zoomToDates(min_date, max_date);
+                //weatherDateAxis.zoomToDates(min_date, max_date);
 
-            let lowerRange = dirtDateAxis.axisRanges.create();
-            lowerRange.date = new Date(min_date + 1000*3600);
-            lowerRange.grid.stroke = am4core.color("#396478");
-            lowerRange.grid.strokeWidth = 2;
-            lowerRange.grid.strokeOpacity = 1;
+                circleActive(event.target);
+
+                let lowerRange = dirtDateAxis.axisRanges.create();
+                lowerRange.date = new Date(min_date + 1000*3600);
+                lowerRange.grid.stroke = am4core.color("#396478");
+                lowerRange.grid.strokeWidth = 2;
+                lowerRange.grid.strokeOpacity = 1;
 
 
-            let upperRange = dirtDateAxis.axisRanges.create();
-            upperRange.date = new Date(max_date + 1000*3600);
-            upperRange.grid.stroke = am4core.color("#396478");
-            upperRange.grid.strokeWidth = 2;
-            upperRange.grid.strokeOpacity = 1;
+                let upperRange = dirtDateAxis.axisRanges.create();
+                upperRange.date = new Date(max_date + 1000*3600);
+                upperRange.grid.stroke = am4core.color("#396478");
+                upperRange.grid.strokeWidth = 2;
+                upperRange.grid.strokeOpacity = 1;
 
 
-            var eventMarker = dirtDateAxis.axisRanges.create();
-            eventMarker.date = new Date(middle + 1000*3600);
-            eventMarker.bullet = new am4core.Triangle();
-            eventMarker.bullet.width = 15;
-            eventMarker.bullet.height = 11;
-            eventMarker.bullet.fill = am4core.color("#c00");
-            eventMarker.bullet.horizontalCenter = "middle";
+                var eventMarker = dirtDateAxis.axisRanges.create();
+                eventMarker.date = new Date(middle + 1000*3600);
+                eventMarker.bullet = new am4core.Triangle();
+                eventMarker.bullet.width = 15;
+                eventMarker.bullet.height = 11;
+                eventMarker.bullet.fill = am4core.color("#c00");
+                eventMarker.bullet.horizontalCenter = "middle";
+            } else {
+                activeEvent = null;
+            }
         });
 
         let cursor = new am4plugins_timeline.CurveCursor();
