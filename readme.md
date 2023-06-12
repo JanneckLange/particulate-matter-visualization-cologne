@@ -62,6 +62,7 @@ Für die Beschreibung der Luftverschmutzung nutzen wir die sogenannten P2-Feinst
 Die Smart City Köln betreibt mehrere Messstationen, die die Feinstaubkonzentration in der Stadt messen (siehe Abbildung 1, [Landesamt für Natur, Umwelt und Verbraucherschutz Nordrhein-Westfalen](https://www.lanuv.nrw.de/umwelt/luft/immissionen/aktuelle-luftqualitaet/) sowie [Luft jetzt](https://luft.jetzt/koeln)).
 
 ![Messstationen der Stadt Köln](/images/Daten_Feinstaub_Messstationen.png)
+
 Abbildung 1: Messstationen der Stadt Köln
 
 Zusätzlich existiert eine Initiative, in der Mitbürger eigene Messstationen betreiben und diese Daten öffentlich zur Verfügung stellen. Die Masse an privaten Messstationen erlaubt allerdings eine feinere und genauere Darstellung über die Verteilung der Feinstaubkonzentration. Diesbezüglich haben wir uns dafür entschieden, diese offene Datenquelle zu nutzen. Das Portal [luftdaten.info](https://luftdaten.info/) bietet neben einer interaktiven Karte auch ein Archiv mit historischen Daten an.
@@ -71,6 +72,7 @@ Die Sensordaten lagen jeweils tageweise vor und wurden dann per Skript herunterg
 Ein Feinstaub-Datensatz hat die folgenden quantitativen Attribute:
 
 ![Attribute der Feinstaubdaten](/images/Daten_Feinstaub_Attribute.png)
+
 Abbildung 2: Attribute der Feinstaubdaten
 
 Die umgewandelten Daten wurden anschließend in eine dokumentenorientierte NoSQL-Datenbank (MongoDB) importiert und in einer eigenen Collection mit den jeweiligen Durchschnittswerten der jeweiligen Tage und Stunden kalkuliert. Das Ergebnis ist eine Collection pro Sensor und zusätzlich eine für den Stunden- und eine für den Tagesdurchschnitt.
@@ -94,6 +96,7 @@ Die Wahl fiel hierbei auf den Kölner Verkehrskalender, da dieser nur solche Ver
 Besonders praktisch war hier auch die angebotene API-Verbindung, über welche die Events der Webseite gesammelt werden konnten. Die Events lagen dabei in 17 Kategorien vor (nominaler Merkmalstyp):
 
 ![Eventkategorien vom Verkehrskalender](/images/Daten_Events_Kategorien.png)
+
 Abbildung 3: Eventkategorien vom Verkehrskalender
 
 Für das Projekt haben wir uns für die folgenden drei Kategorien entschieden, da die übrigen keine Ergebnisse für den Betrachtungszeitraum geliefert haben:
@@ -109,6 +112,7 @@ Die dazugehörigen quantitativen Datumsangaben haben wir dann genutzt, um diese 
 In den vorherigen Beobachtungen der Feinstaubdaten haben wir festgestellt, dass es einen zeitlichen Zusammenhang zwischen der Feinstaubkonzentration und der Tageszeit gibt:
 
 ![Durchschnitttliche Feinstaubkonzentration am Tag (24 Stunden)](/images/Daten_Feinstaub_Verlauf.jpg)
+
 Abbildung 4: Durchschnitttliche Feinstaubkonzentration am Tag (24 Stunden)
 
 Über Nacht ist die Feinstaubkonzentration signifikant höher als am Tage. Unsere Recherchen haben ergeben, dass die Temperatur und die Sonneneinstrahlung den Feinstaub chemisch beeinflussen (näheres dazu im [Statuspapier Feinstaub von der Gesellschaft Deutscher Chemiker](https://www.gdch.de/fileadmin/downloads/Publikationen/Weitere_Publikationen/PDF/feinstaub.pdf)). Dies hat uns dazu veranlasst auch die Wetterdaten für den gewählten Zeitraum zu erfassen. Darunter waren Daten wie:
@@ -127,6 +131,7 @@ Nach langer Recherche konnten wir vom Deutschen Wetterdienst ([DWD](https://www.
 * [Deutscher Wetterdienst](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/)
 
 ![Optisch aufbereitete Originaldaten vom Deutschen Wetterdienst](/images/Daten_Niederschlag_Quelle_DWD.png)
+
 Abbildung 5: Optisch aufbereitete Originaldaten vom Deutschen Wetterdienst
 
 Wie in der Abbildung zu sehen ist, liegen die Daten drei-spaltig quantitativ vor. 106.560 Datensätze waren unterteilt in ein ganzzahliges Messdatum für einen 10-minütigen Messzeitraum. Jeder Datensatz gibt an, wie viele Minuten und welche Menge in Liter es pro Kubikmeter davon geregnet hat.
@@ -175,6 +180,7 @@ alt="DusterBusters - Veranstaltungen genauer betrachten" width="240" height="180
 Wir hatten vermutet, dass Niederschlag oder Luftfeuchtigkeit einen großen Einfluss auf die Konzentration von Feinstaub in der Luft haben. Wie exemplarisch in Abbildung 6 zu sehen ist, wird, meist wenn es regnet, eine niedrigere Feinstaubbelastung gemessen:
 
 ![Kombiniertes Balken- (Niederschlag) und Liniendiagramm](/images/Vergleich_Feinstaub_Niederschlag.png)
+
 Abbildung 9: Kombiniertes Balken- (Niederschlag) und Liniendiagramm (Feinstaub)
 
 Da sich dieses Phänomen auch noch an vielen anderen Stellen widerspiegelt, sehen wir unsere Vermutung als bestätigt.
@@ -191,6 +197,7 @@ Auch auf mehreren anderen Veranstaltung kommt es immer wieder zu vereinzelten st
 Wir mussten aber auch feststellen, dass wir nicht alle Feinstaubausschläge erklären können. Am 09.06.2018 hat jeder Sensor im gesamten Kölner Stadtgebiet Werte weit über dem normalen Mittel gemessen:
 
 ![Feinstaubausschläge vom 09.06.2018](/images/Erkenntnisse_unerklaerliche-ausschlaege.png)
+
 Abbildung 13: Feinstaubausschläge vom 09.06.2018
 
 Zu dem Zeitpunkt fanden zwar verschiedene Veranstaltungen statt, jedoch erklärt keines davon “silvesterähnliche” Ausschläge.
@@ -208,6 +215,7 @@ Als IDEs nutzten wir, für alle HTML und JavaSkript bezogenen Themen, Webstorm v
 Beim initialen Laden der Daten fragt das Frontend die Feinstaubdaten an (Abbildung 14):
 
 ![Frontend: Update der Daten](/images/Implementierung_Frontend_Update-Data.png)
+
 Abbildung 14: Frontend: Update der Daten
 
 Je nach dem, welcher Zeitraum in der Ansicht gewählt wurde (siehe Video), werden entsprechend einer festgelegten Granularität Daten vom Backend angefragt (siehe Abbildung 15):
@@ -221,11 +229,13 @@ Je nach dem, welcher Zeitraum in der Ansicht gewählt wurde (siehe Video), werde
 alt="DusterBusters - Kleiner Bereiche, genauere Daten" width="240" height="180" border="1" /></a>
 
 ![Backend: Abfrage der Feinstaubdaten](/images/Implementierung_Backend_Abfrage-der-Feinstaubdaten.png)
+
 Abbildung 15: Backend: Abfrage der Feinstaubdaten
 
 Auch im Frontend wird überprüft, ob für den gewählten Zeitausschnitt neue Daten angefragt werden müssten, um unnötige Anfragen an das Backend zu vermeiden. Darüber hinaus werden nur die Sensordaten angefragt, die wirklich notwendig sind.
 
 ![Frontend: Darstellung der Diagramme](/images/Implementierung_Frontend_Diagramm-Darstellung.png)
+
 Abbildung 16: Frontend: Darstellung der Diagramme
 
 ## Fazit
