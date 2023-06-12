@@ -1,3 +1,5 @@
+![FeinstaubKoeln_Hauptbild](/images/FeinstaubKoeln_Hauptbild.jpg)
+
 # Feinstaub Köln
 
 JANNECK LANGE, RICHARD MUSEBRINK & BENJAMIN SCHÖNKE
@@ -59,7 +61,7 @@ Für die Beschreibung der Luftverschmutzung nutzen wir die sogenannten P2-Feinst
 
 Die Smart City Köln betreibt mehrere Messstationen, die die Feinstaubkonzentration in der Stadt messen (siehe Abbildung 1, [Landesamt für Natur, Umwelt und Verbraucherschutz Nordrhein-Westfalen](https://www.lanuv.nrw.de/umwelt/luft/immissionen/aktuelle-luftqualitaet/) sowie [Luft jetzt](https://luft.jetzt/koeln)).
 
-// todo
+![Messstationen der Stadt Köln](/images/Daten_Feinstaub_Messstationen.png)
 Abbildung 1: Messstationen der Stadt Köln
 
 Zusätzlich existiert eine Initiative, in der Mitbürger eigene Messstationen betreiben und diese Daten öffentlich zur Verfügung stellen. Die Masse an privaten Messstationen erlaubt allerdings eine feinere und genauere Darstellung über die Verteilung der Feinstaubkonzentration. Diesbezüglich haben wir uns dafür entschieden, diese offene Datenquelle zu nutzen. Das Portal [luftdaten.info](https://luftdaten.info/) bietet neben einer interaktiven Karte auch ein Archiv mit historischen Daten an.
@@ -68,7 +70,7 @@ Die Sensordaten lagen jeweils tageweise vor und wurden dann per Skript herunterg
 
 Ein Feinstaub-Datensatz hat die folgenden quantitativen Attribute:
 
-// todo 
+![Attribute der Feinstaubdaten](/images/Daten_Feinstaub_Attribute.png)
 Abbildung 2: Attribute der Feinstaubdaten
 
 Die umgewandelten Daten wurden anschließend in eine dokumentenorientierte NoSQL-Datenbank (MongoDB) importiert und in einer eigenen Collection mit den jeweiligen Durchschnittswerten der jeweiligen Tage und Stunden kalkuliert. Das Ergebnis ist eine Collection pro Sensor und zusätzlich eine für den Stunden- und eine für den Tagesdurchschnitt.
@@ -91,7 +93,7 @@ Die Wahl fiel hierbei auf den Kölner Verkehrskalender, da dieser nur solche Ver
 
 Besonders praktisch war hier auch die angebotene API-Verbindung, über welche die Events der Webseite gesammelt werden konnten. Die Events lagen dabei in 17 Kategorien vor (nominaler Merkmalstyp):
 
-// todo
+![Eventkategorien vom Verkehrskalender](/images/Daten_Events_Kategorien.png)
 Abbildung 3: Eventkategorien vom Verkehrskalender
 
 Für das Projekt haben wir uns für die folgenden drei Kategorien entschieden, da die übrigen keine Ergebnisse für den Betrachtungszeitraum geliefert haben:
@@ -106,7 +108,7 @@ Die dazugehörigen quantitativen Datumsangaben haben wir dann genutzt, um diese 
 
 In den vorherigen Beobachtungen der Feinstaubdaten haben wir festgestellt, dass es einen zeitlichen Zusammenhang zwischen der Feinstaubkonzentration und der Tageszeit gibt:
 
-// todo
+![Durchschnitttliche Feinstaubkonzentration am Tag (24 Stunden)](/images/Daten_Feinstaub_Verlauf.jpg)
 Abbildung 4: Durchschnitttliche Feinstaubkonzentration am Tag (24 Stunden)
 
 Über Nacht ist die Feinstaubkonzentration signifikant höher als am Tage. Unsere Recherchen haben ergeben, dass die Temperatur und die Sonneneinstrahlung den Feinstaub chemisch beeinflussen (näheres dazu im [Statuspapier Feinstaub von der Gesellschaft Deutscher Chemiker](https://www.gdch.de/fileadmin/downloads/Publikationen/Weitere_Publikationen/PDF/feinstaub.pdf)). Dies hat uns dazu veranlasst auch die Wetterdaten für den gewählten Zeitraum zu erfassen. Darunter waren Daten wie:
@@ -124,7 +126,7 @@ Nach langer Recherche konnten wir vom Deutschen Wetterdienst ([DWD](https://www.
 
 * [Deutscher Wetterdienst](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/)
 
-// todo
+![Optisch aufbereitete Originaldaten vom Deutschen Wetterdienst](/images/Daten_Niederschlag_Quelle_DWD.png)
 Abbildung 5: Optisch aufbereitete Originaldaten vom Deutschen Wetterdienst
 
 Wie in der Abbildung zu sehen ist, liegen die Daten drei-spaltig quantitativ vor. 106.560 Datensätze waren unterteilt in ein ganzzahliges Messdatum für einen 10-minütigen Messzeitraum. Jeder Datensatz gibt an, wie viele Minuten und welche Menge in Liter es pro Kubikmeter davon geregnet hat.
@@ -140,7 +142,9 @@ Für den Vergleich der jeweiligen Daten und der Gegenüberstellung, inwiefern be
 
 Impressionen der ersten Entwürfe:
 
-// todo Abbildung 6-8
+![Prototyp 1](/images/Gallery_Prototyp_0-thumb.jpg)
+![Prototyp 2](/images/Gallery_Prototyp_1-thumb.jpg)
+![Prototyp 3](/images/Gallery_Prototyp_2-thumb.jpg)
 
 ### Visualisierung
 
@@ -156,30 +160,37 @@ Um möglichst viele quantitativen Feinstaubwerte mehrerer Sensoren gleichzeitig 
 
 Die quantitativen Niederschlagsdaten werden als Balkendiagramm angezeigt und mit dem Liniendiagramm kombiniert. Das Balkendiagramm zu nutzen war für uns von Anfang an klar, da sich diese Darstellungsvariante für den Niederschlag in vielen Medien etabliert hat. Der Nutzer ist daher mit dieser Ansichtsart vertraut und es unterscheidet sich ausreichend von den Feinstaubdaten im Liniendiagramm.
 
-// todo Video https://www.youtube.com/watch?v=IxyS-8Vjee8
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=IxyS-8Vjee8
+" target="_blank"><img src="http://img.youtube.com/vi/IxyS-8Vjee8/0.jpg" 
+alt="DusterBusters - Sensoren auswählen, Daten betrachten" width="240" height="180" border="1" /></a>
 
 Die Darstellung der Veranstaltungen wurde in Form einer Zeitleiste in Serpentinenform am rechten Bildschirmrand gelöst. Durch die Serpentinen werden die Events entzerrt und überlagern sich weniger. Zusätzlich besteht aber auch hier die Möglichkeit, den sichtbaren Bereich der Zeitachse zu ändern. Wählt man ein bestimmtes Event aus, dann werden die betroffenen Sensoren angewählt und der Zeitraum des Events wird auf der Zeitleiste der Feinstaubdaten hervorgehoben.
 
-// todo Video https://www.youtube.com/watch?v=U8XKmzGYzvM
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=U8XKmzGYzvM
+" target="_blank"><img src="http://img.youtube.com/vi/U8XKmzGYzvM/0.jpg" 
+alt="DusterBusters - Veranstaltungen genauer betrachten" width="240" height="180" border="1" /></a>
 
 ## Erkenntnisse
 
 Wir hatten vermutet, dass Niederschlag oder Luftfeuchtigkeit einen großen Einfluss auf die Konzentration von Feinstaub in der Luft haben. Wie exemplarisch in Abbildung 6 zu sehen ist, wird, meist wenn es regnet, eine niedrigere Feinstaubbelastung gemessen:
 
-// todo
+![Kombiniertes Balken- (Niederschlag) und Liniendiagramm](/images/Vergleich_Feinstaub_Niederschlag.png)
 Abbildung 9: Kombiniertes Balken- (Niederschlag) und Liniendiagramm (Feinstaub)
 
 Da sich dieses Phänomen auch noch an vielen anderen Stellen widerspiegelt, sehen wir unsere Vermutung als bestätigt.
 
 Auch unsere Hauptforschungsfrage, ob Veranstaltungen einen Einfluss auf die Feinstaubbelastung haben, sehen wir als bestätigt. Zu zahlreichen Veranstaltungen weist die Feinstaubbelastung untypische Muster auf. Wie hier am Beispiel des Straßenfestes auf der Venloher Straße sehr gut zu sehen ist:
 
-// todo Abbildung 10-12
+![Strassenfest 1](/images/Gallery_Strassenfest_0_Auswahl-thumb.jpg)
+![Strassenfest 2](/images/Gallery_Strassenfest_1_Tagesansicht-thumb.jpg)
+![Strassenfest 3](/images/Gallery_Strassenfest_2_Wertevergleich-thumb.jpg)
+
 
 Auch auf mehreren anderen Veranstaltung kommt es immer wieder zu vereinzelten starken Ausschlägen der Feinstaubbelastung. An den beiden Referenzsensoren in der Nähe erkennt man, dass es sich bei den Ausschlägen nicht um natürliche, sondern um künstliche Belastungen des Straßenfestes handelt.
 
 Wir mussten aber auch feststellen, dass wir nicht alle Feinstaubausschläge erklären können. Am 09.06.2018 hat jeder Sensor im gesamten Kölner Stadtgebiet Werte weit über dem normalen Mittel gemessen:
 
-// todo
+![Feinstaubausschläge vom 09.06.2018](/images/Erkenntnisse_unerklaerliche-ausschlaege.png)
 Abbildung 13: Feinstaubausschläge vom 09.06.2018
 
 Zu dem Zeitpunkt fanden zwar verschiedene Veranstaltungen statt, jedoch erklärt keines davon “silvesterähnliche” Ausschläge.
@@ -196,7 +207,7 @@ Als IDEs nutzten wir, für alle HTML und JavaSkript bezogenen Themen, Webstorm v
 
 Beim initialen Laden der Daten fragt das Frontend die Feinstaubdaten an (Abbildung 14):
 
-// todo
+![Frontend: Update der Daten](/images/Implementierung_Frontend_Update-Data.png)
 Abbildung 14: Frontend: Update der Daten
 
 Je nach dem, welcher Zeitraum in der Ansicht gewählt wurde (siehe Video), werden entsprechend einer festgelegten Granularität Daten vom Backend angefragt (siehe Abbildung 15):
@@ -205,14 +216,16 @@ Je nach dem, welcher Zeitraum in der Ansicht gewählt wurde (siehe Video), werde
 * Liegt der Zeitraum innerhalb einer Woche und länger als 10 Stunden, werden die Durchschnittswerte stundenweise ausgegeben.
 * Bei einem gewählten Zeitraum von unter 10 Stunden, werden alle Daten gesendet.
 
-// todo Video https://www.youtube.com/watch?v=bQA3U_Hw76A
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=bQA3U_Hw76A
+" target="_blank"><img src="http://img.youtube.com/vi/bQA3U_Hw76A/0.jpg" 
+alt="DusterBusters - Kleiner Bereiche, genauere Daten" width="240" height="180" border="1" /></a>
 
-// todo
+![Backend: Abfrage der Feinstaubdaten](/images/Implementierung_Backend_Abfrage-der-Feinstaubdaten.png)
 Abbildung 15: Backend: Abfrage der Feinstaubdaten
 
 Auch im Frontend wird überprüft, ob für den gewählten Zeitausschnitt neue Daten angefragt werden müssten, um unnötige Anfragen an das Backend zu vermeiden. Darüber hinaus werden nur die Sensordaten angefragt, die wirklich notwendig sind.
 
-// todo
+![Frontend: Darstellung der Diagramme](/images/Implementierung_Frontend_Diagramm-Darstellung.png)
 Abbildung 16: Frontend: Darstellung der Diagramme
 
 ## Fazit
